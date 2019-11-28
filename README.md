@@ -1,4 +1,4 @@
-# wncaahoopR
+# wncaahoopR <img src="figures/wncaahoopR_hexsticker.png" align="right" />
 An R package for working with women's NCAA Basketball play-by-play data
 
 This package relies heavily on the work done by Luke Benz (lbenz430) in his package
