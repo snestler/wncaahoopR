@@ -1,4 +1,4 @@
-source("R/helpers.R")
+source("R/w_helpers.R")
 
 ############ Function to get PBP Data for a set of ESPN Game IDs ###############
 #' Get Game Play-by-Play Data
@@ -411,13 +411,13 @@ get_roster <- function(team) {
   if(is.na(team)) {
     stop("team is missing with no default")
   }
-  if(!"ncaahoopR" %in% .packages()) {
+  if(!"wncaahoopR" %in% .packages()) {
     ids <- create_ids_df()
   }
   if(!team %in% ids$team) {
     stop("Invalid team. Please consult the ids data frame for a list of valid teams, using data(ids).")
   }
-  base_url <- "https://www.espn.com/mens-college-basketball/team/roster/_/id/"
+  base_url <- "https://www.espn.com/womens-college-basketball/team/roster/_/id/"
   url <-  paste(base_url, ids$id[ids$team == team], "/", ids$link[ids$team == team], sep = "")
   tmp <- try(XML::readHTMLTable(RCurl::getURL(url)))
   if(class(tmp) == "try-error") {
@@ -425,7 +425,7 @@ get_roster <- function(team) {
     return(NULL)
   }
   tmp <- as.data.frame(tmp[[1]])
-  names(tmp) <- c("number", "name", "position", "height", "weight", "class", "hometown")
+  names(tmp) <- c("name", "position", "height", "class", "hometown")
   for(i in 1:ncol(tmp)) {
     tmp[,i] <- as.character(tmp[,i])
   }
