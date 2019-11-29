@@ -16,7 +16,7 @@ w_get_pbp_game <- function(game_ids) {
     stop("game_ids is missing with no default")
   }
 
-  if(!"ncaahoopR" %in% .packages()) {
+  if(!"wncaahoopR" %in% .packages()) {
     ids <- create_ids_df()
   }
   ### Get Play by Play Data
@@ -191,35 +191,35 @@ w_get_pbp_game <- function(game_ids) {
       for(j in 1:nrow(timeout)) {
         play_id <- timeout$play_id[j]
         secs_remaining <- timeout$secs_remaining_relative[j]
-        half <- timeout$half[j]
+        quarter <- timeout$quarter[j]
 
         if(timeout$team[j] == home) {
           pbp$home_time_out_remaining[play_id:nplay] <- pbp$home_time_out_remaining[play_id:nplay] - 1
           pbp$home_timeout_ind[pbp$secs_remaining_relative <= secs_remaining & pbp$secs_remaining_relative
-                               >= secs_remaining - 60 & pbp$half == half] <- 1
+                               >= secs_remaining - 60 & pbp$quarter == quarter] <- 1
         }else {
           pbp$away_time_out_remaining[play_id:nplay] <- pbp$away_time_out_remaining[play_id:nplay] - 1
           pbp$away_timeout_ind[pbp$secs_remaining_relative <= secs_remaining & pbp$secs_remaining_relative
-                               >= secs_remaining - 60 & pbp$half == half] <- 1
+                               >= secs_remaining - 60 & pbp$quarter == quarter] <- 1
         }
       }
     }
-    pbp$home_time_out_remaining[pbp$half > 2] <-
-      pbp$home_time_out_remaining[pbp$half > 2] + (pbp$half[pbp$half > 2] - 2)
-    pbp$away_time_out_remaining[pbp$half > 2] <-
-      pbp$away_time_out_remaining[pbp$half > 2] + (pbp$half[pbp$half > 2] - 2)
+    pbp$home_time_out_remaining[pbp$quarter > 2] <-
+      pbp$home_time_out_remaining[pbp$quarter > 2] + (pbp$quarter[pbp$quarter > 2] - 2)
+    pbp$away_time_out_remaining[pbp$quarter > 2] <-
+      pbp$away_time_out_remaining[pbp$quarter > 2] + (pbp$quarter[pbp$quarter > 2] - 2)
 
     if(any(pbp$home_time_out_remaining < 0) | any(pbp$away_time_out_remaining < 0)) {
       pbp$home_time_out_remaining <- pbp$home_time_out_remaining + 2
       pbp$away_time_out_remaining <- pbp$away_time_out_remaining + 2
     }else{
-      if(max(pbp$home_time_out_remaining[pbp$half == 2]) < 4) {
-        pbp$home_time_out_remaining[pbp$half >= 2] <-
-          pbp$home_time_out_remaining[pbp$half >= 2] + 1
+      if(max(pbp$home_time_out_remaining[pbp$quarter == 2]) < 4) {
+        pbp$home_time_out_remaining[pbp$quarter >= 2] <-
+          pbp$home_time_out_remaining[pbp$quarter >= 2] + 1
       }
-      if(max(pbp$away_time_out_remaining[pbp$half == 2]) < 4) {
-        pbp$away_time_out_remaining[pbp$half >= 2] <-
-          pbp$away_time_out_remaining[pbp$half >= 2] + 1
+      if(max(pbp$away_time_out_remaining[pbp$quarter == 2]) < 4) {
+        pbp$away_time_out_remaining[pbp$quarter >= 2] <-
+          pbp$away_time_out_remaining[pbp$quarter >= 2] + 1
       }
     }
 
@@ -230,7 +230,7 @@ w_get_pbp_game <- function(game_ids) {
       pbp$secs_remaining[2:nrow(pbp)]
 
     pbp <- dplyr::select(pbp, -pre_game_prob)
-    pbp <- dplyr::select(pbp, play_id, half, time_remaining_half,
+    pbp <- dplyr::select(pbp, play_id, quarter, time_remaining_quarter,
                          secs_remaining_relative, secs_remaining, description,
                          home_score, away_score, score_diff, play_length,
                          win_prob, home, away, home_time_out_remaining,
@@ -269,7 +269,7 @@ get_pbp <- function(team) {
   if(is.na(team)) {
     stop("team is missing with no default")
   }
-  if(!"ncaahoopR" %in% .packages()) {
+  if(!"wncaahoopR" %in% .packages()) {
     ids <- create_ids_df()
   }
   if(!team %in% ids$team) {
@@ -295,12 +295,12 @@ get_pbp <- function(team) {
 #' @param team Team to get schedule for
 #' @return A data-frame of the team's schedule for current season
 #' @export
-get_schedule <- function(team) {
+w_get_schedule <- function(team) {
   ### Error Testing
   if(is.na(team)) {
     stop("team is missing with no default")
   }
-  if(!"ncaahoopR" %in% .packages()) {
+  if(!"wncaahoopR" %in% .packages()) {
     ids <- create_ids_df()
   }
   if(!team %in% ids$team) {
@@ -308,7 +308,7 @@ get_schedule <- function(team) {
   }
 
   ### Scrape Team Schedule
-  base_url <- "https://www.espn.com/mens-college-basketball/team/schedule/_/id/"
+  base_url <- "https://www.espn.com/womens-college-basketball/team/schedule/_/id/"
   url <- paste(base_url, ids$id[ids$team == team], "/", ids$link[ids$team == team], sep = "")
   schedule <- XML::readHTMLTable(RCurl::getURL(url))[[1]][-1,]
   schedule <- schedule[,1:4]
@@ -371,15 +371,15 @@ get_schedule <- function(team) {
 #' @param team Team to get game_ids
 #' @return A vector of the team's ESPN game_ids for current season
 #' @export
-get_game_ids <- function(team) {
+w_get_game_ids <- function(team) {
   ### Error Testing
   if(is.na(team)) {
     stop("team is missing with no default")
   }
-  if(!"ncaahoopR" %in% .packages()) {
+  if(!"wncaahoopR" %in% .packages()) {
     ids <- create_ids_df()
   }
-  base_url <- "http://www.espn.com/mens-college-basketball/team/_/id/"
+  base_url <- "http://www.espn.com/womens-college-basketball/team/_/id/"
   url <- paste(base_url, ids$id[ids$team == team], "/", ids$link[ids$team == team], sep = "")
 
   x <- scan(url, what = "", sep = "\n")
@@ -406,7 +406,7 @@ get_game_ids <- function(team) {
 #' @param team Team to get roster for
 #' @return A data-frame of the team's roster for current season
 #' @export
-get_roster <- function(team) {
+w_get_roster <- function(team) {
   ### Error Testing
   if(is.na(team)) {
     stop("team is missing with no default")
@@ -445,7 +445,7 @@ get_roster <- function(team) {
 #' @param day day for which to get master schedule
 #' @return A data-frame of the day's schedule of games
 #' @export
-get_master_schedule <- function(year, month, day) {
+w_get_master_schedule <- function(year, month, day) {
   ### Error Testing
   if(is.na(year)) {
     stop("year is missing with no default")
@@ -464,7 +464,7 @@ get_master_schedule <- function(year, month, day) {
 
   date <- paste0(year, ifelse(nchar(month) == 1, paste0("0", month), month),
                  ifelse(nchar(day) == 1, paste0("0", day), day))
-  url <- paste0("https://www.espn.com/mens-college-basketball/schedule/_/date/", date)
+  url <- paste0("https://www.espn.com/womens-college-basketball/schedule/_/date/", date)
   z <- XML::readHTMLTable(RCurl::getURL(url))
   if(length(z) > 1) {
     schedule <- as.data.frame(z[[1]])[,c(1,2)]

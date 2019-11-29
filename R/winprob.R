@@ -21,7 +21,7 @@ wp_chart <- function(game_id, home_col, away_col, show_legend = T) {
   }
 
   ### Scrape Data from ESPN
-  data <- get_pbp_game(game_id)
+  data <- w_get_pbp_game(game_id)
   if(is.null(data)) {
     print("PBP Data Not Available for Win Probability Chart")
     return(NA)
@@ -120,7 +120,7 @@ game_excitement_index <- function(game_id) {
     stop("game_id is missing with no default")
   }
 
-  data <- get_pbp_game(game_id)
+  data <- w_get_pbp_game(game_id)
   if(is.null(data)) {
     return(NA)
   }
@@ -148,7 +148,7 @@ average_win_prob <- function(game_id) {
     stop("game_id is missing with no default")
   }
 
-  data <- get_pbp_game(game_id)
+  data <- w_get_pbp_game(game_id)
   if(is.null(data)) {
     return(NA)
   }
@@ -170,7 +170,7 @@ average_score_diff <- function(game_id) {
     stop("game_id is missing with no default")
   }
 
-  data <- get_pbp_game(game_id)
+  data <- w_get_pbp_game(game_id)
   if(is.null(data)) {
     return(NA)
   }
@@ -202,7 +202,7 @@ gg_wp_chart <- function(game_id, home_col, away_col, show_labels = T) {
   }
 
   ### Get Data
-  data <- get_pbp_game(game_id)
+  data <- w_get_pbp_game(game_id)
   if(is.null(data)) {
     warning("PBP Data Not Available for Win Probability Chart")
     return(NULL)
@@ -301,7 +301,7 @@ game_flow <- function(game_id, home_col, away_col) {
   }
 
   ### Get Data
-  data <- get_pbp_game(game_id)
+  data <- w_get_pbp_game(game_id)
   if(is.null(data)) {
     warning("PBP Data Not Available for Game Flow Chart")
     return(NULL)
