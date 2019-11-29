@@ -2,22 +2,22 @@
 stripwhite <- function(x) gsub("\\s*$", "", gsub("^\\s*", "", x))
 
 ### Function to clean PBP data
-clean <- function(data, half, OTs) {
+clean <- function(data, quarter, OTs) {
   cleaned <- data %>% dplyr::mutate(play_id = 1:nrow(data),
-                                    half = half,
-                                    time_remaining_half = as.character(V1),
+                                    quarter = quarter,
+                                    time_remaining_quarter = as.character(V1),
                                     description = as.character(V3),
                                     away_score = suppressWarnings(as.numeric(gsub("-.*", "", V4))),
                                     home_score = suppressWarnings(as.numeric(gsub(".*-", "", V4))))
-  cleaned$time_remaining_half[1] <- ifelse(half <= 2, "20:00", "5:00")
-  mins <- suppressWarnings(as.numeric(gsub(":.*","", cleaned$time_remaining_half)))
-  secs <- suppressWarnings(as.numeric(gsub(".*:","", cleaned$time_remaining_half)))
-  cleaned$secs_remaining <- max(20 * (2 - half), 0) * 60 +
-    5 * 60 * max((OTs * as.numeric(half <= 2)), ((OTs + 2 - half) * as.numeric(half > 2))) + 60 * mins + secs
-  if(half == 1) {
+  cleaned$time_remaining_quarter[1] <- ifelse(quarter <= 4, "20:00", "5:00") # Should 5:00 change or not
+  mins <- suppressWarnings(as.numeric(gsub(":.*","", cleaned$time_remaining_quarter)))
+  secs <- suppressWarnings(as.numeric(gsub(".*:","", cleaned$time_remaining_quarter)))
+  cleaned$secs_remaining <- max(10 * (4 - quarter), 0) * 60 +
+    5 * 60 * max((OTs * as.numeric(quarter <= 4)), ((OTs + 4 - quarter) * as.numeric(quarter > 4))) + 60 * mins + secs
+  if(quarter == 1) {
     cleaned[1, c("home_score", "away_score")] <- c(0,0)
   }
-  cleaned <- select(cleaned, play_id, half, time_remaining_half, secs_remaining, description,
+  cleaned <- select(cleaned, play_id, quarter, time_remaining_quarter, secs_remaining, description,
                     home_score, away_score)
   return(cleaned)
 }
@@ -26,9 +26,9 @@ clean <- function(data, half, OTs) {
 create_ids_df <- function() {
   test <- read.csv("https://raw.githubusercontent.com/lbenz730/NCAA_Hoops_Play_By_Play/master/ids.csv",
                    as.is = T)
-  teams_url <- "http://www.espn.com/mens-college-basketball/teams"
+  teams_url <- "http://www.espn.com/womens-college-basketball/teams"
   x <- scan(teams_url, what = "", sep = "\n")
-  x <- x[grep("mens-college-basketball/team/schedule/_/id/", x)][2]
+  x <- x[grep("womens-college-basketball/team/schedule/_/id/", x)][2]
   x <- strsplit(x, "Clubhouse")[[1]]
 
   ids <- data.frame("team" = rep(NA, 353),
@@ -36,7 +36,7 @@ create_ids_df <- function() {
                     "link" = rep(NA, 353))
 
   for(i in 2:length(x)) {
-    y <- strsplit(x[i], "mens-college-basketball/team/_/id/")[[1]][2]
+    y <- strsplit(x[i], "womens-college-basketball/team/_/id/")[[1]][2]
     y <- unlist(strsplit(y, "/"))
     ids$id[i-1] <- y[1]
     ids$link[i-1] <- gsub("\".*", "", y[2])
@@ -220,7 +220,7 @@ get_line <- function(data) {
 
 ### Get Date of Given Game
 get_date <- function(game_id) {
-  url <- paste("http://www.espn.com/mens-college-basketball/playbyplay?gameId=", game_id, sep = "")
+  url <- paste("http://www.espn.com/womens-college-basketball/playbyplay?gameId=", game_id, sep = "")
   y <- scan(url, what = "", sep = "\n")[9]
   y <- unlist(strsplit(y, "-"))
   date <-  stripwhite(y[length(y) - 1])

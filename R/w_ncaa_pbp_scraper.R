@@ -10,7 +10,7 @@ source("R/helpers.R")
 #' on each play of the game. Default = F.
 #' @return A data-frame of the Play-by-Play data fror desired games.
 #' @export
-get_pbp_game <- function(game_ids) {
+w_get_pbp_game <- function(game_ids) {
   ### Error Testing
   if(all(is.na(game_ids))) {
     stop("game_ids is missing with no default")
@@ -20,8 +20,8 @@ get_pbp_game <- function(game_ids) {
     ids <- create_ids_df()
   }
   ### Get Play by Play Data
-  base_url <- "https://www.espn.com/mens-college-basketball/playbyplay?gameId="
-  summary_url <- "https://www.espn.com/mens-college-basketball/game?gameId="
+  base_url <- "https://www.espn.com/womens-college-basketball/playbyplay?gameId="
+  summary_url <- "https://www.espn.com/womens-college-basketball/game?gameId="
   j <- 0
 
   for(i in 1:length(game_ids)) {
@@ -52,48 +52,58 @@ get_pbp_game <- function(game_ids) {
 
     n <- length(tmp)
 
-    if(ncol(tmp[[1]]) == 4) {
-      half_1 <- clean(as.data.frame(tmp[[2]]), 1, 0)
-      half_2 <- clean(as.data.frame(tmp[[3]]), 2, 0)
-      pbp <- rbind(half_1, half_2)
+    if(ncol(tmp[[1]]) == 6) {
+      qtr_1 <- clean(as.data.frame(tmp[[2]]), 1, 0)
+      qtr_2 <- clean(as.data.frame(tmp[[3]]), 2, 0)
+      qtr_3 <- clean(as.data.frame(tmp[[4]]), 3, 0)
+      qtr_4 <- clean(as.data.frame(tmp[[5]]), 4, 0)
+      pbp <- rbind(qtr_1, qtr_2, qtr_3, qtr_4)
     }
 
     ### 1 OT
-    else if(ncol(tmp[[1]]) == 5 & ((n == 6 & ncol(tmp[[5]]) == 4) | (n == 5 & ncol(tmp[[4]]) == 5))) {
-      half_1 <- clean(as.data.frame(tmp[[2]]), 1, 1)
-      half_2 <- clean(as.data.frame(tmp[[3]]), 2, 1)
-      half_3 <- clean(as.data.frame(tmp[[4]]), 3, 1)
-      pbp <- rbind(half_1, half_2, half_3)
+    else if(ncol(tmp[[1]]) == 7 & ((n == 8 & ncol(tmp[[7]]) == 4) | (n == 7 & ncol(tmp[[6]]) == 5))) {
+      qtr_1 <- clean(as.data.frame(tmp[[2]]), 1, 0)
+      qtr_2 <- clean(as.data.frame(tmp[[3]]), 2, 0)
+      qtr_3 <- clean(as.data.frame(tmp[[4]]), 3, 0)
+      qtr_4 <- clean(as.data.frame(tmp[[5]]), 4, 0)
+      qtr_5 <- clean(as.data.frame(tmp[[6]]), 5, 0)
+      pbp <- rbind(qtr_1, qtr_2, qtr_3, qtr_4, qtr_5)
     }
 
     ### 2 OT
-    else if(ncol(tmp[[1]]) == 5 & ((n == 7 & ncol(tmp[[6]]) == 4) | (n == 6 & ncol(tmp[[5]]) == 5))) {
-      half_1 <- clean(as.data.frame(tmp[[2]]), 1, 2)
-      half_2 <- clean(as.data.frame(tmp[[3]]), 2, 2)
-      half_3 <- clean(as.data.frame(tmp[[4]]), 3, 2)
-      half_4 <- clean(as.data.frame(tmp[[5]]), 4, 2)
-      pbp <- rbind(half_1, half_2, half_3, half_4)
+    else if(ncol(tmp[[1]]) == 8 & ((n == 9 & ncol(tmp[[7]]) == 4) | (n == 8 & ncol(tmp[[6]]) == 5))) {
+      qtr_1 <- clean(as.data.frame(tmp[[2]]), 1, 0)
+      qtr_2 <- clean(as.data.frame(tmp[[3]]), 2, 0)
+      qtr_3 <- clean(as.data.frame(tmp[[4]]), 3, 0)
+      qtr_4 <- clean(as.data.frame(tmp[[5]]), 4, 0)
+      qtr_5 <- clean(as.data.frame(tmp[[6]]), 5, 0)
+      qtr_6 <- clean(as.data.frame(tmp[[7]]), 6, 0)
+      pbp <- rbind(qtr_1, qtr_2, qtr_3, qtr_4, qtr_5, qtr_6)
     }
 
     ### 3 OT
-    else if(ncol(tmp[[1]]) == 5 & ((n == 8 & ncol(tmp[[7]]) == 4) | (n == 7 & ncol(tmp[[6]]) == 5))){
-      half_1 <- clean(as.data.frame(tmp[[2]]), 1, 3)
-      half_2 <- clean(as.data.frame(tmp[[3]]), 2, 3)
-      half_3 <- clean(as.data.frame(tmp[[4]]), 3, 3)
-      half_4 <- clean(as.data.frame(tmp[[5]]), 4, 3)
-      half_5 <- clean(as.data.frame(tmp[[6]]), 5, 3)
-      pbp <- rbind(half_1, half_2, half_3, half_4, half_5)
+    else if(ncol(tmp[[1]]) == 9 & ((n == 10 & ncol(tmp[[7]]) == 4) | (n == 9 & ncol(tmp[[6]]) == 5))){
+      qtr_1 <- clean(as.data.frame(tmp[[2]]), 1, 0)
+      qtr_2 <- clean(as.data.frame(tmp[[3]]), 2, 0)
+      qtr_3 <- clean(as.data.frame(tmp[[4]]), 3, 0)
+      qtr_4 <- clean(as.data.frame(tmp[[5]]), 4, 0)
+      qtr_5 <- clean(as.data.frame(tmp[[6]]), 5, 0)
+      qtr_6 <- clean(as.data.frame(tmp[[7]]), 6, 0)
+      qtr_7 <- clean(as.data.frame(tmp[[8]]), 7, 0)
+      pbp <- rbind(qtr_1, qtr_2, qtr_3, qtr_4, qtr_5, qtr_6, qtr_7)
     }
 
     ### 4 OT
-    else if(ncol(tmp[[1]]) == 5 & ((n == 9 & ncol(tmp[[8]]) == 4) | (n == 8 & ncol(tmp[[7]]) == 5))) {
-      half_1 <- clean(as.data.frame(tmp[[2]]), 1, 4)
-      half_2 <- clean(as.data.frame(tmp[[3]]), 2, 4)
-      half_3 <- clean(as.data.frame(tmp[[4]]), 3, 4)
-      half_4 <- clean(as.data.frame(tmp[[5]]), 4, 4)
-      half_5 <- clean(as.data.frame(tmp[[6]]), 5, 4)
-      half_6 <- clean(as.data.frame(tmp[[7]]), 6, 4)
-      pbp <- rbind(half_1, half_2, half_3, half_4, half_5, half_6)
+    else if(ncol(tmp[[1]]) == 10 & ((n == 11 & ncol(tmp[[7]]) == 4) | (n == 10 & ncol(tmp[[6]]) == 5))) {
+      qtr_1 <- clean(as.data.frame(tmp[[2]]), 1, 0)
+      qtr_2 <- clean(as.data.frame(tmp[[3]]), 2, 0)
+      qtr_3 <- clean(as.data.frame(tmp[[4]]), 3, 0)
+      qtr_4 <- clean(as.data.frame(tmp[[5]]), 4, 0)
+      qtr_5 <- clean(as.data.frame(tmp[[6]]), 5, 0)
+      qtr_6 <- clean(as.data.frame(tmp[[7]]), 6, 0)
+      qtr_7 <- clean(as.data.frame(tmp[[8]]), 7, 0)
+      qtr_8 <- clean(as.data.frame(tmp[[9]]), 8, 0)
+      pbp <- rbind(qtr_1, qtr_2, qtr_3, qtr_4, qtr_5, qtr_6, qtr_7, qtr_8)
     }
 
     these <- grep(T, is.na(pbp$home_score))
