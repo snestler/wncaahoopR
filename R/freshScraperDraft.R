@@ -20,6 +20,9 @@ w_get_pbp_game <- function(game_ids) {
     ids <- create_ids_df()
   }
   ### Get Play by Play Data
+  
+  # testID <- 401176897
+  # otID <- 401179779
   base_url <- "https://www.espn.com/womens-college-basketball/playbyplay?gameId="
   summary_url <- "https://www.espn.com/womens-college-basketball/game?gameId="
   j <- 0
@@ -72,25 +75,23 @@ w_get_pbp_game <- function(game_ids) {
                     away_score = suppressWarnings(as.numeric(gsub("-.*", "", SCORE))),
                     home_score = suppressWarnings(as.numeric(gsub(".*-", "", SCORE))))
     
-    # pbp$time_remaining_period[1] <- ifelse(half <= 2, "20:00", "5:00")
-    
     mins <- suppressWarnings(as.numeric(gsub(":.*","", pbp$time_remaining_period)))
     
     secs <- suppressWarnings(as.numeric(gsub(".*:","", pbp$time_remaining_period)))
     
     OTS <- length(unique(pbp$period[pbp$period > 4]))
     
-    if(OTS == 0) {
-      cleaned$secs_remaining <- (10 * (4 - pbp$period) + mins) * 60 + secs
-    }
-    5 * 60 * max((OTs * as.numeric(half <= 2)), ((OTs + 2 - half) * as.numeric(half > 2))) + 60 * mins + secs
+    pbp$secs_remaining <- pmax(10 * (4 - pbp$period), 0) * 60 +
+      5 * 60 * pmax((OTS * as.numeric(pbp$period <= 4)), ((OTS + 4 - pbp$period) * as.numeric(pbp$period > 4))) + 
+      60 * mins + secs
     
-    cleaned[1, c("secs_remaining", "home_score", "away_score")] <- c(0,0)
-    
-    cleaned <- select(cleaned, play_id, half, time_remaining_half, secs_remaining, description,
+    pbp <- select(pbp, play_id, period, time_remaining_period, secs_remaining, description,
                       home_score, away_score)
     
-    these <- grep(T, is.na(pbp$home_score))
+    pbp[1, c("home_score", "away_score")] <- c(0,0)
+    
+    these <- which(is.na(pbp$home_score))
+    
     pbp[these, c("home_score", "away_score")] <- pbp[these - 1 , c("home_score", "away_score")]
     
     ### Get full team names
@@ -102,37 +103,29 @@ w_get_pbp_game <- function(game_ids) {
     home_abv <- as.character(as.data.frame(tmp[[1]])[2,1])
     
     ### Get Game Line
-    y <- scan(url2, what = "", sep = "\n")
-    y <- y[grep("Line:", y)]
-    if(length(y) > 0) {
-      y <- gsub("<[^<>]*>", "", y)
-      y <- gsub("\t", "", y)
-      y <- strsplit(y, ": ")[[1]][2]
-      line <- as.numeric(strsplit(y, " ")[[1]][2])
-      abv <- strsplit(y, " ")[[1]][1]
-      if(abv == home_abv) {
-        line <- line * -1
-      }
-    }else {
-      line <- NA
-    }
+    # y <- scan(url2, what = "", sep = "\n")
+    # y <- y[grep("Line:", y)]
+    # if(length(y) > 0) {
+    #   y <- gsub("<[^<>]*>", "", y)
+    #   y <- gsub("\t", "", y)
+    #   y <- strsplit(y, ": ")[[1]][2]
+    #   line <- as.numeric(strsplit(y, " ")[[1]][2])
+    #   abv <- strsplit(y, " ")[[1]][1]
+    #   if(abv == home_abv) {
+    #     line <- line * -1
+    #   }
+    # }else {
+    #   line <- NA
+    # }
     
-    pbp$home_favored_by <- line
-    pbp$play_id <- 1:nrow(pbp)
+    pbp$home_favored_by <- NA
     pbp$game_id <- game_ids[i]
     pbp$date <- get_date(game_ids[i])
     pbp$score_diff <- pbp$home_score - pbp$away_score
     
     ### Win Probability by Play
-    if(is.na(pbp$home_favored_by[1])) {
-      pbp$home_favored_by <- get_line(pbp)
-    }
-    if(!is.na(pbp$home_favored_by[1])){
-      pbp$pre_game_prob <- predict(prior, newdata = data.frame(pred_score_diff = pbp$home_favored_by),
-                                   type = "response")
-    }else{
-      pbp$pre_game_prob <- 0.5
-    }
+    pbp$pre_game_prob <- 0.5
+    
     
     ### Relative Time
     pbp$secs_remaining_relative <- NA
@@ -145,13 +138,13 @@ w_get_pbp_game <- function(game_ids) {
     ### Compute Win Prob
     pbp$win_prob <- wp_compute(pbp)
     
-    ### Hardcode to 50-50 if Line = 0 or NA
-    if(is.na(pbp$home_favored_by[1]) | pbp$home_favored_by[1] == 0) {
-      pbp$win_prob[1] <- 0.5
-    }
+    # ### Hardcode to 50-50 if Line = 0 or NA
+    # if(is.na(pbp$home_favored_by[1]) | pbp$home_favored_by[1] == 0) {
+    #   pbp$win_prob[1] <- 0.5
+    # }
     
     ### Time Outs
-    timeout <- dplyr::filter(pbp, sapply(pbp$description, grepl, pattern = "Timeout")) %>%
+    timeout <- dplyr::filter(pbp, grepl("Timeout", description)) %>%
       dplyr::filter(description != "Official TV Timeout")
     
     timeout$team <- sapply(timeout$description, function(z) gsub("\\s* Timeout", "", z))
@@ -214,7 +207,7 @@ w_get_pbp_game <- function(game_ids) {
       pbp$secs_remaining[2:nrow(pbp)]
     
     pbp <- dplyr::select(pbp, -pre_game_prob)
-    pbp <- dplyr::select(pbp, play_id, quarter, time_remaining_quarter,
+    pbp <- dplyr::select(pbp, play_id, quarter, time_remaining_period,
                          secs_remaining_relative, secs_remaining, description,
                          home_score, away_score, score_diff, play_length,
                          win_prob, home, away, home_time_out_remaining,

@@ -2,6 +2,7 @@
 #' Define Logit function
 #'
 #' @export
+#' @importFrom dplyr case_when
 #' @keywords internal
 
 logit <- function(x) {
