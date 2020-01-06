@@ -15,15 +15,15 @@
 #' @export
 
 w_get_pbp_game <- function(game_ids) {
-  load("sysdata.rda")
-  ### Error Testing
-  if(all(is.na(game_ids))) {
-    stop("game_ids is missing with no default")
-  }
-  
-  if(!"wncaahoopR" %in% .packages()) {
-    ids <- create_ids_df()
-  }
+  load("R/sysdata.rda")
+  ## Error Testing
+  # if(all(is.na(game_ids))) {
+  #   stop("game_ids is missing with no default")
+  # }
+  # 
+  # if(!"wncaahoopR" %in% .packages()) {
+  #   ids <- create_ids_df()
+  # }
   ### Get Play by Play Data
   
   # testID <- 401176897
@@ -34,10 +34,10 @@ w_get_pbp_game <- function(game_ids) {
   
   for(i in 1:length(game_ids)) {
     message(paste0("Scraping Data for Game: ", i, " of ", length(game_ids)))
-    if(is.nit(game_ids[i])) {
-      message("NIT Game--Play by Play Data Not Available at this time")
-      next
-    }
+    # if(is.nit(game_ids[i])) {
+    #   message("NIT Game--Play by Play Data Not Available at this time")
+    #   next
+    
     url <- paste(base_url, game_ids[i], sep = "")
     tmp <- try(xml2::read_html(url) %>% 
                  rvest::html_table(fill = TRUE))
@@ -48,8 +48,8 @@ w_get_pbp_game <- function(game_ids) {
     
     tmp <- tmp[gameTableIndex]
     
-    for(i in nPeriod) {
-      tmp[[i]][, "period"] <- i
+    for(t in nPeriod) {
+      tmp[[t]][, "period"] <- t
     }
     
     tmp <- do.call("rbind", tmp)
@@ -57,21 +57,21 @@ w_get_pbp_game <- function(game_ids) {
     tmp <- tmp[!is.na(names(tmp))]
     
     ### Check if PBP Data is Available
-    if(length(tmp) == 0) {
-      message("Play by Play Data Not Available")
-      next
-    }else if(length(tmp) < ncol(tmp[[1]]) | length(tmp) == 0) {
-      message("Play by Play Data Not Available")
-      next
-    }else{
-      t1 <- as.numeric(unlist(strsplit(as.character(tmp[[2]][2,1]), ":")))
-      t2 <- as.numeric(unlist(strsplit(as.character(tmp[[2]][5,1]), ":")))
-      if(60 * t1[1] + t1[2] < 60 * t2[1] + t2[2]) {
-        message("Game In Progress--Play by Play Data Not Available. Please Check Back After the Game")
-        next
-      }
-      j <- j + 1
-    }
+    # if(length(tmp) == 0) {
+    #   message("Play by Play Data Not Available")
+    #   next
+    # }else if(length(tmp) < ncol(tmp[[1]]) | length(tmp) == 0) {
+    #   message("Play by Play Data Not Available")
+    #   next
+    # }else{
+    #   t1 <- as.numeric(unlist(strsplit(as.character(tmp[[2]][2,1]), ":")))
+    #   t2 <- as.numeric(unlist(strsplit(as.character(tmp[[2]][5,1]), ":")))
+    #   if(60 * t1[1] + t1[2] < 60 * t2[1] + t2[2]) {
+    #     message("Game In Progress--Play by Play Data Not Available. Please Check Back After the Game")
+    #     next
+    #   }
+    #   j <- j + 1
+    # }
     
     pbp <- tmp %>% 
       dplyr::mutate(play_id = 1:nrow(.),
@@ -90,8 +90,8 @@ w_get_pbp_game <- function(game_ids) {
       5 * 60 * pmax((OTS * as.numeric(pbp$period <= 4)), ((OTS + 4 - pbp$period) * as.numeric(pbp$period > 4))) + 
       60 * mins + secs
     
-    pbp <- dplyr::selectselect(pbp, play_id, period, time_remaining_period, secs_remaining, description,
-                  home_score, away_score)
+    pbp <- dplyr::select(pbp, play_id, period, time_remaining_period, secs_remaining, description,
+                         home_score, away_score)
     
     pbp[1, c("home_score", "away_score")] <- c(0,0)
     
@@ -101,7 +101,8 @@ w_get_pbp_game <- function(game_ids) {
     
     ### Get full team names
     url2 <- paste(summary_url, game_ids[i], sep = "")
-    tmp <- XML::readHTMLTable(RCurl::getURL(url2))
+    tmp <- xml2::read_html(url2) %>% 
+      rvest::html_table(fill = TRUE)
     pbp$away <- as.character(as.data.frame(tmp[[2]])[1,1])
     pbp$home <- as.character(as.data.frame(tmp[[2]])[2,1])
     away_abv <- as.character(as.data.frame(tmp[[1]])[1,1])
@@ -227,11 +228,13 @@ w_get_pbp_game <- function(game_ids) {
     else{
       pbp_all <- rbind(pbp_all, pbp)
     }
+    
+    if(!exists("pbp_all")) {
+      pbp_all <- NULL
+    }
+    
+    return(pbp_all)
+    
   }
+}  
   
-  if(!exists("pbp_all")) {
-    pbp_all <- NULL
-  }
-  
-  return(pbp_all)
-}
