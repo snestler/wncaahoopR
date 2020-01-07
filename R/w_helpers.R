@@ -16,6 +16,11 @@
 # coeffs <- read.csv("https://raw.githubusercontent.com/lbenz730/Senior-Thesis/master/model_coefficients/model_0_coeffs.csv", as.is = T)
 # coeffs$estimate[coeffs$max_time <= 2 & coeffs$coefficient == "favored_by"] <- 0
 # 
+# 
+# test <- read.csv("https://raw.githubusercontent.com/lbenz730/NCAA_Hoops_Play_By_Play/master/ids.csv",
+#                  as.is = T)
+# 
+# save(history, games_2016, games_2017, games_2018, train, prior, coeffs)
 # ### Fit Loess Models to get smooth functions of coefficient estimate over time
 # score_diff_smooth <-
 #   loess(estimate ~ max_time,

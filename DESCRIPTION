@@ -1,5 +1,5 @@
 Package: wncaahoopR
-Title: What the Package Does (One Line, Title Case)
+Title: Scrapes Women's Basketball Play-by-Play Data from ESPN.com
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
@@ -7,6 +7,9 @@ Authors@R:
            role = c("aut", "cre"),
            email = "first.last@example.com")
 Description: What the package does (one paragraph).
+Imports:
+    dplyr,
+    ggplot2
 License: What license it uses
 Encoding: UTF-8
 LazyData: true
