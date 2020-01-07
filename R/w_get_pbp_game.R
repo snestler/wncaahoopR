@@ -7,6 +7,8 @@
 #' @return A data-frame of the Play-by-Play data fror desired games.
 #' @importFrom xml2 read_html
 #' @importFrom rvest html_table
+#' @importFrom rvest html_nodes
+#' @importFrom rvest html_text
 #' @importFrom dplyr %>% 
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
@@ -39,8 +41,8 @@ w_get_pbp_game <- function(game_ids) {
     #   next
     
     url <- paste(base_url, game_ids[i], sep = "")
-    tmp <- try(xml2::read_html(url) %>% 
-                 rvest::html_table(fill = TRUE))
+    allHTML <- try(xml2::read_html(url))
+    tmp <- rvest::html_table(allHTML, fill = TRUE)
     
     gameTableIndex <- grep("PLAY", lapply(tmp, function(x) names(x)))
     
@@ -126,7 +128,11 @@ w_get_pbp_game <- function(game_ids) {
     
     pbp$home_favored_by <- NA
     pbp$game_id <- game_ids[i]
-    pbp$date <- get_date(game_ids[i])
+    pbp$date <- allHTML %>% 
+      html_nodes("title") %>%
+      html_text() %>% 
+      regmatches(., regexpr("\\w+\\s[0-9]+,\\s[0-9]{4}", .)) %>% 
+      as.Date(., "%B %d, %Y")
     pbp$score_diff <- pbp$home_score - pbp$away_score
     
     ### Win Probability by Play
