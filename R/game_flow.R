@@ -12,6 +12,8 @@
 #' @examples
 #' pbp_data <- w_get_pbp_game("401176897")
 #' game_flow(pbp_data, "red", "black")
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 element_text
 #' @export
 game_flow <- function(pbp_data, home_col = "blue", away_col = "gold") {
   ### Error Testing

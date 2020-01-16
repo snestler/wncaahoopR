@@ -1,5 +1,5 @@
 ### Make ids df (only if package not loaded in memory)
-create_ids_df <- function() {
+old_create_ids_df <- function() {
   test <- read.csv("https://raw.githubusercontent.com/lbenz730/NCAA_Hoops_Play_By_Play/master/ids.csv",
                    as.is = T)
   teams_url <- "http://www.espn.com/womens-college-basketball/teams"

@@ -9,7 +9,7 @@
 #' @importFrom rvest html_table
 #' @importFrom rvest html_nodes
 #' @importFrom rvest html_text
-#' @importFrom dplyr %>% 
+#' @importFrom magrittr %>% 
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
 #' @importFrom dplyr filter
@@ -180,35 +180,35 @@ w_get_pbp_game <- function(game_ids) {
       for(j in 1:nrow(timeout)) {
         play_id <- timeout$play_id[j]
         secs_remaining <- timeout$secs_remaining_relative[j]
-        quarter <- timeout$quarter[j]
+        period <- timeout$period[j]
         
         if(timeout$team[j] == home) {
           pbp$home_time_out_remaining[play_id:nplay] <- pbp$home_time_out_remaining[play_id:nplay] - 1
           pbp$home_timeout_ind[pbp$secs_remaining_relative <= secs_remaining & pbp$secs_remaining_relative
-                               >= secs_remaining - 60 & pbp$quarter == quarter] <- 1
+                               >= secs_remaining - 60 & pbp$period == period] <- 1
         }else {
           pbp$away_time_out_remaining[play_id:nplay] <- pbp$away_time_out_remaining[play_id:nplay] - 1
           pbp$away_timeout_ind[pbp$secs_remaining_relative <= secs_remaining & pbp$secs_remaining_relative
-                               >= secs_remaining - 60 & pbp$quarter == quarter] <- 1
+                               >= secs_remaining - 60 & pbp$period == period] <- 1
         }
       }
     }
-    pbp$home_time_out_remaining[pbp$quarter > 2] <-
-      pbp$home_time_out_remaining[pbp$quarter > 2] + (pbp$quarter[pbp$quarter > 2] - 2)
-    pbp$away_time_out_remaining[pbp$quarter > 2] <-
-      pbp$away_time_out_remaining[pbp$quarter > 2] + (pbp$quarter[pbp$quarter > 2] - 2)
+    pbp$home_time_out_remaining[pbp$period > 2] <-
+      pbp$home_time_out_remaining[pbp$period > 2] + (pbp$period[pbp$period > 2] - 2)
+    pbp$away_time_out_remaining[pbp$period > 2] <-
+      pbp$away_time_out_remaining[pbp$period > 2] + (pbp$period[pbp$period > 2] - 2)
     
     if(any(pbp$home_time_out_remaining < 0) | any(pbp$away_time_out_remaining < 0)) {
       pbp$home_time_out_remaining <- pbp$home_time_out_remaining + 2
       pbp$away_time_out_remaining <- pbp$away_time_out_remaining + 2
     }else{
-      if(max(pbp$home_time_out_remaining[pbp$quarter == 2]) < 4) {
-        pbp$home_time_out_remaining[pbp$quarter >= 2] <-
-          pbp$home_time_out_remaining[pbp$quarter >= 2] + 1
+      if(max(pbp$home_time_out_remaining[pbp$period == 2]) < 4) {
+        pbp$home_time_out_remaining[pbp$period >= 2] <-
+          pbp$home_time_out_remaining[pbp$period >= 2] + 1
       }
-      if(max(pbp$away_time_out_remaining[pbp$quarter == 2]) < 4) {
-        pbp$away_time_out_remaining[pbp$quarter >= 2] <-
-          pbp$away_time_out_remaining[pbp$quarter >= 2] + 1
+      if(max(pbp$away_time_out_remaining[pbp$period == 2]) < 4) {
+        pbp$away_time_out_remaining[pbp$period >= 2] <-
+          pbp$away_time_out_remaining[pbp$period >= 2] + 1
       }
     }
     
@@ -219,7 +219,7 @@ w_get_pbp_game <- function(game_ids) {
       pbp$secs_remaining[2:nrow(pbp)]
     
     pbp <- dplyr::select(pbp, -pre_game_prob)
-    pbp <- dplyr::select(pbp, play_id, quarter, time_remaining_period,
+    pbp <- dplyr::select(pbp, play_id, period, time_remaining_period,
                          secs_remaining_relative, secs_remaining, description,
                          home_score, away_score, score_diff, play_length,
                          win_prob, home, away, home_time_out_remaining,

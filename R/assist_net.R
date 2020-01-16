@@ -22,6 +22,11 @@
 #'  }
 #' @export
 
+# --------------------------
+# NEED TO MAKE WORK WITH PBP OBJECT
+# --------------------------
+
+
 assist_net <- function(team, season, node_col, three_weights = T, threshold = 0, message = NA, listing = TRUE) {
   ### Error Testing
   if(is.na(team)) {
