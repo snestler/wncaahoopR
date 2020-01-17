@@ -1,10 +1,10 @@
-############ Function to get PBP Data for a set of ESPN Game IDs ###############
-#' Get Game Play-by-Play Data
+#' Get Play by Play Data
 #'
-#' Scrapes ESPN Play-by-Play data for the desired games.
+#' @description Scrapes ESPN Play-by-Play data for a single (or multiple) game(s).
+#' @usage w_get_pbp_game(game_ids)
 #'
 #' @param game_ids Vector of ESPN game-IDs
-#' @return A data-frame of the Play-by-Play data fror desired games.
+#' @return A data frame of the Play-by-Play data for desired games.
 #' @importFrom xml2 read_html
 #' @importFrom rvest html_table
 #' @importFrom rvest html_nodes

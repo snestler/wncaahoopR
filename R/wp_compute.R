@@ -1,6 +1,9 @@
-############ sin probability compute ###############
 #' Win Probability Function
-#'
+
+#' @description Computes the win probability, given a game state.
+#' @usage wp_compute(WHAT IS PASSED IN?)
+#' @return A single number, a probability between 0 and 1.
+#' 
 #' @export
 #' @keywords internal
 

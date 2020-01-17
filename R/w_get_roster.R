@@ -1,8 +1,8 @@
-####################### Function To Get a Team's Roster ########################
 #' Get Team Roster
 #'
-#' Gets team roster for current season.
-#'
+#' @description Gets team roster for current season.
+#' @usage get_roster(team)
+#' 
 #' @param team Team to get roster for
 #' @return A data-frame of the team's roster for current season. Largely internal.
 #' @return A data-frame of the Play-by-Play data fror desired games.

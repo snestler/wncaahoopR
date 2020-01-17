@@ -1,6 +1,9 @@
-############ secs_to_model helper ###############
-#' Get Approiate Model for Time Remaining
+#' Seconds to Model Helper
+#' 
+#' @description Get appropriate model for time remaining.
+#' @usage secs_to_model(sec, msec)
 #'
+#' @return list of minutes and seconds remaining
 #' @export
 #' @keywords internal
 

@@ -1,3 +1,8 @@
+#' Make list of team ID's
+#'
+#'  NOT SURE YET IF WE NEED THIS OR NOT
+#'
+#'
 ### Make ids df (only if package not loaded in memory)
 old_create_ids_df <- function() {
   test <- read.csv("https://raw.githubusercontent.com/lbenz730/NCAA_Hoops_Play_By_Play/master/ids.csv",

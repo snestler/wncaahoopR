@@ -4,15 +4,7 @@
 \alias{assist_net}
 \title{Assist Network}
 \usage{
-assist_net(
-  pbp_data,
-  team,
-  node_col,
-  three_weights = TRUE,
-  threshold = 0,
-  message = NA,
-  listing = TRUE
-)
+assist_net(pbp_data)
 }
 \arguments{
 \item{pbp_data}{lay-by-play data returned from w_get_pbp_game}
@@ -42,5 +34,5 @@ List with network statistics
  }
 }
 \description{
-Renders assist network for game or entire season
+This function produces an assist network visualization for a team for a single game (or collection of games).
 }

@@ -4,7 +4,7 @@
 \alias{wp_chart}
 \title{Win Probability Chart}
 \usage{
-wp_chart(pbp_data, home_col = NULL, away_col = NULL, show_legend = TRUE)
+wp_chart(pbp_data, home_col, away_col, show_legend)
 }
 \arguments{
 \item{pbp_data}{Play-by-play data returned from w_get_pbp_game}
@@ -17,5 +17,5 @@ wp_chart(pbp_data, home_col = NULL, away_col = NULL, show_legend = TRUE)
 on the chart. Default = TRUE}
 }
 \description{
-Renders win proability chart for desired game
+Renders win proability chart for desired game.
 }

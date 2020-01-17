@@ -1,6 +1,8 @@
-############ gg_color_hue helper ###############
-#' Get Approiate Model for Time Remaining
-#'
+#' ggplot Color Hue
+#' 
+#' @description Gets the hues for circle_assist_net given the number of players.
+#' @usage gg_color_hue(n)
+#' 
 #' @export
 #' @keywords internal
 gg_color_hue <- function(n) {

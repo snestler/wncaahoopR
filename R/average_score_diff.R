@@ -1,8 +1,8 @@
 #' Average Score Differential
 #'
-#' Computes Time-Based Average Score Differential for the Home Team
-#' @description This function returns a single value for the average score differential.
+#' @description Returns a single value for the average score differential from home team's perspective.
 #' @usage average_score_diff(pbp_data)
+#' 
 #' @param pbp_data Play-by-play data returned from w_get_pbp_game
 #' @return Average score differential
 #' @export

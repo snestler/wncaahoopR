@@ -2,11 +2,14 @@
 % Please edit documentation in R/secs_to_model.R
 \name{secs_to_model}
 \alias{secs_to_model}
-\title{Get Approiate Model for Time Remaining}
+\title{Seconds to Model Helper}
 \usage{
 secs_to_model(sec, msec)
 }
+\value{
+list of minutes and seconds remaining
+}
 \description{
-Get Approiate Model for Time Remaining
+Get appropriate model for time remaining.
 }
 \keyword{internal}

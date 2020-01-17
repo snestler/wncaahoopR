@@ -2,11 +2,11 @@
 % Please edit documentation in R/gg_color_hue.R
 \name{gg_color_hue}
 \alias{gg_color_hue}
-\title{Get Approiate Model for Time Remaining}
+\title{ggplot Color Hue}
 \usage{
 gg_color_hue(n)
 }
 \description{
-Get Approiate Model for Time Remaining
+Gets the hues for circle_assist_net given the number of players.
 }
 \keyword{internal}

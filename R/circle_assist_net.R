@@ -1,8 +1,8 @@
 #' Circle Assist Network
 #'
-#' Renders circlized assist network for game or entire season and allows for highlight
-#' of a single player if desired.
-#'
+#' @description This function produces an assist network visualization for a team for a single game (or collection of games).
+#' @usage circle_assist_net(pbp_data)
+#' 
 #' @param team Team to create network for
 #' @param season Season, as a character,  (e.g. "2018-19"), or vector of ESPN game_ids.
 #' for which data to use in network. Currently only handles the current season worth of data.

@@ -2,11 +2,11 @@
 % Please edit documentation in R/logit.R
 \name{logit}
 \alias{logit}
-\title{Define Logit function}
+\title{Logit helper function}
 \usage{
 logit(x)
 }
 \description{
-Define Logit function
+defines the logit function
 }
 \keyword{internal}

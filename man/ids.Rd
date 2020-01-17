@@ -3,7 +3,7 @@
 \docType{data}
 \name{ids}
 \alias{ids}
-\title{A data frame with ESPN team names to be used in the ncaahoopR package.}
+\title{Team Name Data}
 \format{A data frame with ESPN team names to be used in the ncaahoopR package.
 \describe{
  \item{team}{the name of the team to be suplied to function in ncaahoopR package}
@@ -11,10 +11,10 @@
  \item{link}{team URL link; used in ESPN URLs}
 }}
 \usage{
-ids
+NOT SURE WHAT TO PUT HERE
 }
 \description{
-A data frame with ESPN team names to be used in the ncaahoopR package.
+Provides a data frame with ESPN team names for use in the wncaahoopR package.
 }
 \details{
 Simply look for the spelling of your deired team in the team column

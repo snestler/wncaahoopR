@@ -4,9 +4,12 @@
 \alias{wp_compute}
 \title{Win Probability Function}
 \usage{
-wp_compute(x)
+wp_compute(WHAT IS PASSED IN?)
+}
+\value{
+A single number, a probability between 0 and 1.
 }
 \description{
-Win Probability Function
+Computes the win probability, given a game state.
 }
 \keyword{internal}

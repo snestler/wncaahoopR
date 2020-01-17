@@ -4,7 +4,7 @@
 \alias{get_shot_locs}
 \title{Get Shot Locations}
 \usage{
-get_shot_locs(game_ids)
+get_shot_locs(pbp_data, home_col, away_col)
 }
 \arguments{
 \item{game_ids}{Vector of ESPN game_ids}
@@ -13,5 +13,5 @@ get_shot_locs(game_ids)
 A data-frame with shot details (including location) for given game_ids
 }
 \description{
-Extracts Shot location data for a specific game
+Gets and plots shot locations for a game.
 }

@@ -4,7 +4,7 @@
 \alias{w_get_roster}
 \title{Get Team Roster}
 \usage{
-w_get_roster(team)
+get_roster(team)
 }
 \arguments{
 \item{team}{Team to get roster for}

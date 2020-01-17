@@ -2,9 +2,9 @@
 # ^^^^^ Commented this out to prevent error when building package.
 
 #' Get Shot Locations
-#'
-#' Extracts Shot location data for a specific game
-#'
+#' @description Gets and plots shot locations for a game.
+#' @usage get_shot_locs(pbp_data, home_col, away_col)
+#' 
 #' @param game_ids Vector of ESPN game_ids
 #' @return A data-frame with shot details (including location) for given game_ids
 #' @export
