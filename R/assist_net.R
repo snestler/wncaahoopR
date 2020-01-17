@@ -1,7 +1,9 @@
 #' Assist Network
 #'
 #' Renders assist network for game or entire season
-#'
+#' @description This function produces an assist network visualization for a team for a single game.
+#' @usage assist_net(pbp_data)
+#' 
 #' @param pbp_data lay-by-play data returned from w_get_pbp_game
 #' @param team Team to create network for
 #' @param node_col Color of nodes in network

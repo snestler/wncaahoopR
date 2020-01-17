@@ -1,4 +1,5 @@
-source("R/w_helpers.R")
+# source("R/w_helpers.R")
+# ^^^^^ Commented this out to prevent error when building package.
 
 #' Get Shot Locations
 #'
