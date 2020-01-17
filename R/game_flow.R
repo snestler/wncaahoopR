@@ -4,8 +4,10 @@
 #' @description This function creates a game flow chart with ggplot2.
 #' @usage game_flow(pbp_data, home_col, away_col)
 #' @param pbp_data Play-by-play data returned from w_get_pbp_game
-#' @param home_col Color of home team for chart
-#' @param away_col Color of away team for chart
+#' @param home_col Color of home team for chart. Can be selected but defaults 
+#' to primary team color.
+#' @param away_col Color of away team for chart. Can be selected but defaults 
+#' to primary team color.
 #' @details This function takes play-by-play data returned from w_get_pbp_game
 #' and returns a ggplot2 object to show the game flow.
 #' @return A ggplot2 object
@@ -15,10 +17,16 @@
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 element_text
 #' @export
-game_flow <- function(pbp_data, home_col = "blue", away_col = "gold") {
+game_flow <- function(pbp_data, home_col = NULL, away_col = NULL) {
   ### Error Testing
   if(is.na(pbp_data)) {
     stop("game_id is missing with no default")
+  }
+  if(is.null(home_col)) {
+    home_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$home)]
+  }
+  if(is.null(away_col)) {
+    away_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$away)]
   }
 
   ### Get Data

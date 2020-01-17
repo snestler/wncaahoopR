@@ -2,10 +2,9 @@
 #'
 #' Renders assist network for game or entire season
 #'
+#' @param pbp_data lay-by-play data returned from w_get_pbp_game
 #' @param team Team to create network for
 #' @param node_col Color of nodes in network
-#' @param season Season, as a character,  (e.g. "2018-19"), or vector of ESPN game_ids.
-#' for which data to use in network. Currently only handles the current season worth of data.
 #' @param three_weights Logical indicating whether to give extra weight for assisted three point shots.
 #' If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weight 1). Default = `TRUE`.
 #' @param threshold Number between 0-1 indicating minimum percentage of team assists/baskets a player needs to exceed to be included in network. Default = 0.
@@ -27,13 +26,11 @@
 # --------------------------
 
 
-assist_net <- function(team, season, node_col, three_weights = T, threshold = 0, message = NA, listing = TRUE) {
+assist_net <- function(pbp_data, team, node_col, three_weights = TRUE, 
+                       threshold = 0, message = NA, listing = TRUE) {
   ### Error Testing
-  if(is.na(team)) {
-    stop("team is missing with no default")
-  }
-  if(is.na(season[1])) {
-    stop("season is missing with no default")
+  if(is.na(pbp_data)) {
+    stop("pbp_data is missing with no default")
   }
   if(is.na(node_col)) {
     stop("node_col is missing with no default")
@@ -43,9 +40,9 @@ assist_net <- function(team, season, node_col, three_weights = T, threshold = 0,
   text_team <- text_team[!is.na(text_team)]
   
   ### Warnings
-  if(!"ncaahoopR" %in% .packages()) {
-    ids <- create_ids_df()
-  }
+  # if(!"ncaahoopR" %in% .packages()) {
+  #   ids <- create_ids_df()
+  # }
   if(!team %in% ids$team) {
     warning("Invalid team. Please consult the ids data frame for a list of valid teams, using data(ids).")
     return(NULL)
@@ -56,28 +53,22 @@ assist_net <- function(team, season, node_col, three_weights = T, threshold = 0,
   }
   
   ### Read Play-by-Play File
-  if(season[1] == "2019-20") {
-    x <- get_pbp(team)
-    text <- " Assist Network for 2018-19 Season"
-    factor <- 0.75
-  }else {
-    x <- suppressWarnings(try(get_pbp_game(season), silent = T))
-    if(class(x) == "try-error" | class(x) == "NULL") {
-      warning("Play-by-Play Data Not Available for Assist Network")
-      return(NULL)
-    }
+  # if(season[1] == "2019-20") {
+  #   x <- get_pbp(team)
+  #   text <- " Assist Network for 2018-19 Season"
+  #   factor <- 0.75
+  # }else {
+  #   x <- suppressWarnings(try(get_pbp_game(season), silent = T))
+  #   if(class(x) == "try-error" | class(x) == "NULL") {
+  #     warning("Play-by-Play Data Not Available for Assist Network")
+  #     return(NULL)
+  #   }
     opp <- setdiff(c(x$away, x$home), text_team)
-    if(length(season) == 1 & is.na(message)){
-      text <- paste(" Assist Network vs. ", opp, sep = "")
-    }
-    else{
-      text <- message
-    }
+    
     factor <- 1.25
-  }
   
   ### Get Roster
-  roster <- try(get_roster(team))
+  roster <- try(w_get_roster(team))
   if(class(roster) == "try-error") {
     warning("Unable to get roster. ESPN is updating CBB files. Check back again soon")
     return(NULL)
@@ -99,7 +90,7 @@ assist_net <- function(team, season, node_col, three_weights = T, threshold = 0,
     return(list("shot_maker" = shot_maker, "assister" = assister))
   }
   
-  x <- mutate(x, "ast" = NA, "shot" = NA)
+  x <- dplyr::mutate(x, "ast" = NA, "shot" = NA)
   for(i in 1:nrow(x)) {
     play <- splitplay(x$description[i])
     x$ast[i] <- play$assister
@@ -188,12 +179,7 @@ assist_net <- function(team, season, node_col, three_weights = T, threshold = 0,
   igraph::E(net)$width <- igraph::E(net)$weight * factor
   igraph::V(net)$color <- node_col
   
-  if(any(season %in% c("2016-17", "2017-18", "2018-19"))) {
-    labs <- NA
-  }
-  else{
-    labs <- as.character(network$num)
-  }
+  labs <- as.character(network$num)
   
   
   title <-

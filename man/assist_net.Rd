@@ -5,20 +5,19 @@
 \title{Assist Network}
 \usage{
 assist_net(
+  pbp_data,
   team,
-  season,
   node_col,
-  three_weights = T,
+  three_weights = TRUE,
   threshold = 0,
   message = NA,
   listing = TRUE
 )
 }
 \arguments{
-\item{team}{Team to create network for}
+\item{pbp_data}{lay-by-play data returned from w_get_pbp_game}
 
-\item{season}{Season, as a character,  (e.g. "2018-19"), or vector of ESPN game_ids.
-for which data to use in network. Currently only handles the current season worth of data.}
+\item{team}{Team to create network for}
 
 \item{node_col}{Color of nodes in network}
 

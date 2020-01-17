@@ -8,19 +8,22 @@
 #' @param show_legend Logical indicating whether or not to display legend and min win probability
 #' on the chart. Default = TRUE
 #' @export
-wp_chart <- function(pbp_data, home_col, away_col, show_legend = TRUE) {
+wp_chart <- function(pbp_data, home_col = NULL, away_col = NULL, show_legend = TRUE) {
   ### Error Testing
   if(is.na(pbp_data)) {
     stop("game_id is missing with no default")
   }
-  if(is.na(home_col)) {
-    stop("home_col is missing with no default")
+  if(is.null(home_col)) {
+    home_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$home)]
   }
-  if(is.na(away_col)) {
-    stop("away_col is missing with no default")
+  if(is.null(away_col)) {
+    away_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$away)]
   }
   
-  ### Scrape Data from ESPN
+  
+  
+  
+  
   date <- format(as.Date(pbp_data$date[1]), "%B %d, %Y")
   msec <- max(pbp_data$secs_remaining_absolute)
   
