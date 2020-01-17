@@ -1,4 +1,4 @@
-############ secs_to_model helper ###############
+############ sin probability compute ###############
 #' Win Probability Function
 #'
 #' @export
