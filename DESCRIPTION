@@ -10,6 +10,7 @@ Description: What the package does (one paragraph).
 Imports:
     dplyr,
     ggplot2,
+    igraph,
     magrittr,
     rvest
 License: What license it uses

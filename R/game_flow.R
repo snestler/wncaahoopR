@@ -25,8 +25,19 @@ game_flow <- function(pbp_data, home_col = NULL, away_col = NULL) {
   if(is.null(home_col)) {
     home_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$home)]
   }
+  
+  if(length(home_col) == 0) {
+    home_col <- "red"
+    message("There were no colors found for the home team -- defaulting to red.")
+  }
+  
   if(is.null(away_col)) {
     away_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$away)]
+  }
+  
+  if(length(away_col) == 0) {
+    away_col <- "black"
+    message("There were no colors found for the away team -- defaulting to black.")
   }
 
   ### Get Data
@@ -70,22 +81,25 @@ game_flow <- function(pbp_data, home_col = NULL, away_col = NULL) {
   max_score <- max(c(pbp_data$home_score, pbp_data$away_score))
 
   ### Make Plot
-  ggplot2::ggplot(x, aes(x = secs_elapsed/60, y = score, group = team, col = team)) +
+  ggplot2::ggplot(x, aes(x = secs_elapsed/60, y = score, group = team, color = team)) +
     ggplot2::geom_step(size = 1) +
-    ggplot2::theme_bw() +
-    ggplot2::geom_vline(xintercept = plot_lines/60, lty = 2, alpha = 0.5, size = 0.8) +
+    ggplot2::theme_minimal() +
+    # ggplot2::geom_vline(xintercept = plot_lines/60, lty = 2, alpha = 0.5, size = 0.8) +
     ggplot2::labs(x = "Minutes Elapsed",
                   y = "Score",
-                  col = "",
+                  col = element_blank(),
                   title = paste("Game Flow Chart for", home_team, "vs.", away_team),
-                  subtitle = date) +
-    ggplot2::theme(plot.title = element_text(size = 16, hjust = 0.5),
-                   plot.subtitle = element_text(size = 12, hjust = 0.5),
+                  subtitle = paste(date, avg_sd, sep = "\n")) +
+    ggplot2::theme(plot.title = element_text(size = 16),
+                   plot.subtitle = element_text(size = 12),
                    axis.title = element_text(size = 14),
-                   plot.caption = element_text(size = 8, hjust = 0),
-                   legend.position = "bottom") +
+                   legend.position = "top", 
+                   legend.justification = "left",
+                   panel.grid.minor.y = element_blank(), 
+                   panel.grid.minor.x = element_blank(),
+                   panel.grid.major = element_line(size = .1))+
     ggplot2::scale_x_continuous(breaks = seq(0, msec/60, 5)) +
     ggplot2::scale_color_manual(values = c(away_col, home_col),
-                                labels = c(away_team, home_team)) +
-    ggplot2::annotate("text", x = 10, y = max_score - 10, label = avg_sd)
+                                labels = c(away_team, home_team)) 
+  # +ggplot2::annotate("text", x = 10, y = max_score - 10, label = avg_sd)
 }
