@@ -1,8 +1,8 @@
 #' Game Flow Chart
 #'
-#' Renders Game Flow Chart
-#' @description This function creates a game flow chart with ggplot2.
+#' @description Creates a game flow chart with ggplot2.
 #' @usage game_flow(pbp_data, home_col, away_col)
+#' 
 #' @param pbp_data Play-by-play data returned from w_get_pbp_game
 #' @param home_col Color of home team for chart. Can be selected but defaults 
 #' to primary team color.

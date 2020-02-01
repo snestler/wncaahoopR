@@ -1,3 +1,13 @@
+#' Get Line
+#'
+#' @description Gets the line (in points) of the game from WHERE?
+#' @usage get_line(pbp_data)
+#' 
+#' @param pbp_data Play-by-play data returned from w_get_pbp_game
+#' @return Line
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 element_text
+#' @export
 ### Impute Line for Games
 get_line <- function(data) {
   game_date <- data$date[1]

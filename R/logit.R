@@ -1,5 +1,7 @@
-############ logit helper ###############
-#' Define Logit function
+#' Logit helper function
+#' 
+#' @description defines the logit function
+#' @usage logit(x)
 #'
 #' @export
 #' @importFrom dplyr case_when

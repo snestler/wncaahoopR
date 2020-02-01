@@ -2,7 +2,7 @@
 % Please edit documentation in R/w_get_pbp_game.R
 \name{w_get_pbp_game}
 \alias{w_get_pbp_game}
-\title{Get Game Play-by-Play Data}
+\title{Get Play by Play Data}
 \usage{
 w_get_pbp_game(game_ids)
 }
@@ -10,8 +10,8 @@ w_get_pbp_game(game_ids)
 \item{game_ids}{Vector of ESPN game-IDs}
 }
 \value{
-A data-frame of the Play-by-Play data fror desired games.
+A data frame of the Play-by-Play data for desired games.
 }
 \description{
-Scrapes ESPN Play-by-Play data for the desired games.
+Scrapes ESPN Play-by-Play data for a single (or multiple) game(s).
 }

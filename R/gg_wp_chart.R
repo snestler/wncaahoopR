@@ -1,9 +1,8 @@
 #' Win Probability Charts in ggplot
-#'
-#' Renders Win Probability Charts in ggplot
-#'
+#' 
 #' @description This function creates a win probability chart over the game duration.
 #' @usage gg_wp_chart(pbp_data, home_col, away_col, show_labels)
+#' 
 #' @param pbp_data Play-by-play data returned from w_get_pbp_game
 #' @param home_col Color of home team for chart
 #' @param away_col Color of away team for chart

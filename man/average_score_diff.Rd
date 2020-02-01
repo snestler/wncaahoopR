@@ -13,8 +13,5 @@ average_score_diff(pbp_data)
 Average score differential
 }
 \description{
-This function returns a single value for the average score differential.
-}
-\details{
-Computes Time-Based Average Score Differential for the Home Team
+Returns a single value for the average score differential from home team's perspective.
 }

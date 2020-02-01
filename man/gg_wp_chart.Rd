@@ -20,8 +20,6 @@ Win Probability metrics should be displayed on the plot. Default = TRUE.}
 This function creates a win probability chart over the game duration.
 }
 \details{
-Renders Win Probability Charts in ggplot
-
 This function takes play-by-play data returned from w_get_pbp_game
 and returns a ggplot2 object to show each teams win probability during the game.
 }

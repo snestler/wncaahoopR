@@ -4,16 +4,7 @@
 \alias{circle_assist_net}
 \title{Circle Assist Network}
 \usage{
-circle_assist_net(
-  team,
-  season,
-  highlight_player = NA,
-  highlight_color = NA,
-  three_weights = T,
-  threshold = 0,
-  message = NA,
-  listing = TRUE
-)
+circle_assist_net(pbp_data)
 }
 \arguments{
 \item{team}{Team to create network for}
@@ -47,6 +38,5 @@ List with network statistics
  }
 }
 \description{
-Renders circlized assist network for game or entire season and allows for highlight
-of a single player if desired.
+This function produces an assist network visualization for a team for a single game (or collection of games).
 }

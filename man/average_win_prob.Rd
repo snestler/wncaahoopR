@@ -4,7 +4,7 @@
 \alias{average_win_prob}
 \title{Average Win Probability}
 \usage{
-game_flow(pbp_data, home_col, away_col)
+average_win_prob(pbp_data)
 }
 \arguments{
 \item{pbp_data}{Play-by-play data returned from w_get_pbp_game}

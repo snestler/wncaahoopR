@@ -1,7 +1,8 @@
 #' Win Probability Chart
 #'
-#' Renders win proability chart for desired game
-#'
+#' @description Renders win proability chart for desired game.
+#' @usage wp_chart(pbp_data, home_col, away_col, show_legend)
+#' 
 #' @param pbp_data Play-by-play data returned from w_get_pbp_game
 #' @param home_col Color of home team for chart
 #' @param away_col Color of away team for chart

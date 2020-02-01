@@ -19,11 +19,9 @@ to primary team color.}
 A ggplot2 object
 }
 \description{
-This function creates a game flow chart with ggplot2.
+Creates a game flow chart with ggplot2.
 }
 \details{
-Renders Game Flow Chart
-
 This function takes play-by-play data returned from w_get_pbp_game
 and returns a ggplot2 object to show the game flow.
 }

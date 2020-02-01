@@ -1,6 +1,7 @@
 #' Game Excitement Index
 #'
-#' Computes Game Excitement Index for Desired Game
+#' @description Computes Game Excitement Index for Desired Game
+#' @usage game_excitement_index(pbp_data)
 #'
 #' @param pbp_data Play-by-play data returned from w_get_pbp_game
 #' @return GEI--Game Exictement Index
