@@ -1,9 +1,9 @@
 #' Win Probability Charts in ggplot
 #' 
 #' @description This function creates a win probability chart over the game duration.
-#' @usage gg_wp_chart(pbp_data, home_col, away_col, show_labels)
+#' @usage gg_wp_chart(.data, home_col, away_col, show_labels)
 #' 
-#' @param pbp_data Play-by-play data returned from w_get_pbp_game
+#' @param .data Play-by-play data returned from w_get_pbp_game
 #' @param home_col Color of home team for chart
 #' @param away_col Color of away team for chart
 #' @param show_gei Logical whether Game Exictement Index and Minimum
@@ -15,9 +15,11 @@
 #' gg_wp_chart(pbp_data, "red", "black")
 #' @importFrom magrittr %>% 
 #' @export
-gg_wp_chart <- function(pbp_data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
+gg_wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
   
-  if(is.na(pbp_data)) {
+  pbp_data <- .data
+  
+  if(is.na(.data)) {
     stop("game_id is missing with no default")
   }
   if(is.null(home_col)) {

@@ -4,16 +4,16 @@
 \alias{gg_wp_chart}
 \title{Win Probability Charts in ggplot}
 \usage{
-gg_wp_chart(pbp_data, home_col, away_col, show_labels)
+gg_wp_chart(.data, home_col, away_col, show_labels)
 }
 \arguments{
-\item{pbp_data}{Play-by-play data returned from w_get_pbp_game}
+\item{.data}{Play-by-play data returned from w_get_pbp_game}
 
 \item{home_col}{Color of home team for chart}
 
 \item{away_col}{Color of away team for chart}
 
-\item{show_labels}{Logical whether Game Exictement Index and Minimum
+\item{show_gei}{Logical whether Game Exictement Index and Minimum
 Win Probability metrics should be displayed on the plot. Default = TRUE.}
 }
 \description{

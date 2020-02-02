@@ -1,11 +1,12 @@
 #' Assist Network
 #'
 #' @description This function produces an assist network visualization for a team for a single game (or collection of games).
-#' @usage assist_net(pbp_data)
+#' @usage assist_net(.data)
 #' 
-#' @param pbp_data lay-by-play data returned from w_get_pbp_game
+#' @param .data lay-by-play data returned from w_get_pbp_game
 #' @param team Team to create network for
-#' @param node_col Color of nodes in network
+#' @param node_col Color of nodes in network. Can be selected but defaults 
+#' to primary team color and then a backup from one is not found.
 #' @param three_weights Logical indicating whether to give extra weight for assisted three point shots.
 #' If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weight 1). Default = `TRUE`.
 #' @param threshold Number between 0-1 indicating minimum percentage of team assists/baskets a player needs to exceed to be included in network. Default = 0.
@@ -27,14 +28,22 @@
 # --------------------------
 
 
-assist_net <- function(pbp_data, team, node_col, three_weights = TRUE, 
+assist_net <- function(.data, team, node_col, three_weights = TRUE, 
                        threshold = 0, message = NA, listing = TRUE) {
+  
+  pbp_data <- .data
   ### Error Testing
   if(is.na(pbp_data)) {
     stop("pbp_data is missing with no default")
   }
-  if(is.na(node_col)) {
-    stop("node_col is missing with no default")
+  
+  if(is.null(node_col)) {
+    node_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == team]
+  }
+  
+  if(length(node_col) == 0) {
+    node_col <- "#ff5501"
+    message("There were no colors found for the specified team -- defaulting to something nice")
   }
   
   text_team <- dict$ESPN_PBP[dict$ESPN == team]
@@ -52,19 +61,7 @@ assist_net <- function(pbp_data, team, node_col, three_weights = TRUE,
     warning("Threshold for display must be between 0 and 1")
     return(NULL)
   }
-  
-  ### Read Play-by-Play File
-  # if(season[1] == "2019-20") {
-  #   x <- get_pbp(team)
-  #   text <- " Assist Network for 2018-19 Season"
-  #   factor <- 0.75
-  # }else {
-  #   x <- suppressWarnings(try(get_pbp_game(season), silent = T))
-  #   if(class(x) == "try-error" | class(x) == "NULL") {
-  #     warning("Play-by-Play Data Not Available for Assist Network")
-  #     return(NULL)
-  #   }
-    opp <- setdiff(c(x$away, x$home), text_team)
+    opp <- setdiff(c(pbp_data$away, pbp_data$home), text_team)
     
     factor <- 1.25
   
@@ -75,9 +72,9 @@ assist_net <- function(pbp_data, team, node_col, three_weights = TRUE,
     return(NULL)
   }
   roster$name <- gsub("Jr.", "Jr", roster$name)
-  games <- unique(x$game_id)
-  ast <- grep("Assisted", x$description)
-  x <- x[ast, ]
+  games <- unique(pbp_data$game_id)
+  ast <- grep("Assisted", pbp_data$description)
+  x <- pbp_data[ast, ]
   
   ### Get Ast/Shot from ESPN Play Description
   splitplay <- function(description) {

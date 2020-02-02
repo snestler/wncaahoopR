@@ -1,9 +1,9 @@
 #' Game Flow Chart
 #'
 #' @description Creates a game flow chart with ggplot2.
-#' @usage game_flow(pbp_data, home_col, away_col)
+#' @usage game_flow(.data, home_col, away_col)
 #' 
-#' @param pbp_data Play-by-play data returned from w_get_pbp_game
+#' @param .data Play-by-play data returned from w_get_pbp_game
 #' @param home_col Color of home team for chart. Can be selected but defaults 
 #' to primary team color.
 #' @param away_col Color of away team for chart. Can be selected but defaults 
@@ -17,8 +17,11 @@
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 element_text
 #' @export
-game_flow <- function(pbp_data, home_col = NULL, away_col = NULL) {
+game_flow <- function(.data, home_col = NULL, away_col = NULL) {
   ### Error Testing
+  
+  pbp_data <- .data
+  
   if(is.na(pbp_data)) {
     stop("game_id is missing with no default")
   }
@@ -81,25 +84,42 @@ game_flow <- function(pbp_data, home_col = NULL, away_col = NULL) {
   max_score <- max(c(pbp_data$home_score, pbp_data$away_score))
 
   ### Make Plot
-  ggplot2::ggplot(x, aes(x = secs_elapsed/60, y = score, group = team, color = team)) +
+  library(grid)
+  t1 <- grid::textGrob(expr("Game Flow for " * phantom(!!home_team) * " vs " * phantom(!!away_team)),
+                       just = "top", x = .25, y = 1.1, gp = gpar(col = "black", fontsize = 16))
+  
+  t2 <- grid::textGrob(expr(phantom("Game Flow for ") * !!home_team * phantom(" vs ") * phantom(!!away_team)),
+                       just = "top", x = .25, y = 1.1, gp = gpar(col = home_col, fontsize = 16))
+  
+  t3 <- grid::textGrob(expr(phantom("Game Flow for ") * phantom(!!home_team) * phantom(" vs ") * !!away_team),
+                       just = "top", x = .25, y = 1.1, gp = gpar(col = away_col, fontsize = 16))
+  
+  p <- ggplot2::ggplot(x, aes(x = secs_elapsed/60, y = score, group = team, color = team)) +
     ggplot2::geom_step(size = 1) +
     ggplot2::theme_minimal() +
     # ggplot2::geom_vline(xintercept = plot_lines/60, lty = 2, alpha = 0.5, size = 0.8) +
     ggplot2::labs(x = "Minutes Elapsed",
                   y = "Score",
                   col = element_blank(),
-                  title = paste("Game Flow Chart for", home_team, "vs.", away_team),
+                  title = "",
                   subtitle = paste(date, avg_sd, sep = "\n")) +
     ggplot2::theme(plot.title = element_text(size = 16),
                    plot.subtitle = element_text(size = 12),
                    axis.title = element_text(size = 14),
-                   legend.position = "top", 
+                   legend.position = "none", 
                    legend.justification = "left",
                    panel.grid.minor.y = element_blank(), 
                    panel.grid.minor.x = element_blank(),
                    panel.grid.major = element_line(size = .1))+
     ggplot2::scale_x_continuous(breaks = seq(0, msec/60, 5)) +
     ggplot2::scale_color_manual(values = c(away_col, home_col),
-                                labels = c(away_team, home_team)) 
+                                labels = c(away_team, home_team)) +
+    annotation_custom(grobTree(t1, t2, t3), xmin = 0, ymin = Inf)
   # +ggplot2::annotate("text", x = 10, y = max_score - 10, label = avg_sd)
+  
+  g <- ggplot_gtable(ggplot_build(p))
+  g$layout$clip[g$layout$name == "panel"] <- "off"
+  
+  plot.new()
+  grid::grid.draw(g, recording = FALSE)
 }

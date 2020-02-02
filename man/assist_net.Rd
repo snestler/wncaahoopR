@@ -4,14 +4,15 @@
 \alias{assist_net}
 \title{Assist Network}
 \usage{
-assist_net(pbp_data)
+assist_net(.data)
 }
 \arguments{
-\item{pbp_data}{lay-by-play data returned from w_get_pbp_game}
+\item{.data}{lay-by-play data returned from w_get_pbp_game}
 
 \item{team}{Team to create network for}
 
-\item{node_col}{Color of nodes in network}
+\item{node_col}{Color of nodes in network. Can be selected but defaults 
+to primary team color and then a backup from one is not found.}
 
 \item{three_weights}{Logical indicating whether to give extra weight for assisted three point shots.
 If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weight 1). Default = `TRUE`.}
