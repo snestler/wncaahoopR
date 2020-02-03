@@ -27,8 +27,7 @@
 # NEED TO MAKE WORK WITH PBP OBJECT
 # --------------------------
 
-
-assist_net <- function(.data, team, node_col, three_weights = TRUE, 
+assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE, 
                        threshold = 0, message = NA, listing = TRUE) {
   
   pbp_data <- .data

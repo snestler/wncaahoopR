@@ -16,6 +16,8 @@
 #' game_flow(pbp_data, "red", "black")
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 element_text
+#' @importFrom ggplot2 element_blank
+#' @importFrom ggplot2 element_line
 #' @export
 game_flow <- function(.data, home_col = NULL, away_col = NULL) {
   ### Error Testing
@@ -85,6 +87,7 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
 
   ### Make Plot
   library(grid)
+  library(ggplot2)
   t1 <- grid::textGrob(expr("Game Flow for " * phantom(!!home_team) * " vs " * phantom(!!away_team)),
                        just = "top", x = .25, y = 1.1, gp = gpar(col = "black", fontsize = 16))
   
@@ -114,7 +117,7 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
     ggplot2::scale_x_continuous(breaks = seq(0, msec/60, 5)) +
     ggplot2::scale_color_manual(values = c(away_col, home_col),
                                 labels = c(away_team, home_team)) +
-    annotation_custom(grobTree(t1, t2, t3), xmin = 0, ymin = Inf)
+    ggplot2::annotation_custom(grobTree(t1, t2, t3), xmin = 0, ymin = Inf)
   # +ggplot2::annotate("text", x = 10, y = max_score - 10, label = avg_sd)
   
   g <- ggplot_gtable(ggplot_build(p))
