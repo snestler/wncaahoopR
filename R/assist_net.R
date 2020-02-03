@@ -178,9 +178,9 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   
   labs <- as.character(network$num)
   
+  text <- " Assist Graph"
   
-  title <-
-    ifelse(is.na(message), paste0(text_team, ifelse(three_weights, " Weighted", ""), text), text)
+  title <- ifelse(is.na(message), paste0(text_team, ifelse(three_weights, " Weighted", ""), text), text)
   if(length(unique(x$game_id)) == 1 & is.na(message)) {
     title <- paste(title, format(as.Date(x$date[1]), "%B %d, %Y"), sep = "\n")
   }
