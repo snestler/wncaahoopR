@@ -1,7 +1,7 @@
 #' Team Name Data
 #'
 #' @description Provides a data frame with ESPN team names for use in the wncaahoopR package.
-#' @usage NOT SURE WHAT TO PUT HERE
+#' @usage data(ids)
 #'
 #' @docType data
 #' @format A data frame with ESPN team names to be used in the ncaahoopR package.
