@@ -24,26 +24,30 @@
 #'  \item{"shot_freq"} - Player percenatge of scoring on team's assisted baskets
 #'  }
 #' @export
-circle_assist_net <- function(team, season, highlight_player = NA, highlight_color = NA,
-                              three_weights = T, threshold = 0, message = NA, listing = TRUE) {
+circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = NA, three_weights = TRUE, 
+                              threshold = 0, message = NA, listing = TRUE) {
+  pbp_data <- .data
   ### Error Testing
-  if(is.na(team)) {
-    stop("team is missing with no default")
+  if(is.na(pbp_data)) {
+    stop("pbp_data is missing with no default")
   }
-  if(is.na(season[1])) {
-    stop("season is missing with no default")
+  
+  if(is.null(node_col)) {
+    node_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == team]
   }
-  if(is.na(highlight_color) & !is.na(highlight_player)) {
-    warning("Please provide highlight color")
+  
+  if(length(node_col) == 0) {
+    node_col <- "#ff5501"
+    message("There were no colors found for the specified team -- defaulting to something nice")
   }
   
   text_team <- dict$ESPN_PBP[dict$ESPN == team]
   text_team <- text_team[!is.na(text_team)]
   
   ### Warnings
-  if(!"ncaahoopR" %in% .packages()) {
-    ids <- create_ids_df()
-  }
+  # if(!"ncaahoopR" %in% .packages()) {
+  #   ids <- create_ids_df()
+  # }
   if(!team %in% ids$team) {
     warning("Invalid team. Please consult the ids data frame for a list of valid teams, using data(ids).")
     return(NULL)
@@ -52,38 +56,20 @@ circle_assist_net <- function(team, season, highlight_player = NA, highlight_col
     warning("Threshold for display must be between 0 and 1")
     return(NULL)
   }
+  opp <- setdiff(c(pbp_data$away, pbp_data$home), text_team)
   
-  ### Read Play-by-Play File
-  if(season[1] == "2018-19") {
-    x <- get_pbp(team)
-    text <- " Assist Network\n2018-19 Season"
-    factor <- 0.75
-  }else {
-    x <- suppressWarnings(try(get_pbp_game(season), silent = T))
-    if(class(x) == "try-error" | class(x) == "NULL") {
-      warning("Play-by-Play Data Not Available for Assist Network")
-      return(NULL)
-    }
-    opp <- setdiff(c(x$away, x$home), text_team)
-    if(length(season) == 1){
-      text <- paste(" Assist Network vs. ", opp, sep = "")
-    }
-    else{
-      text <- message
-    }
-    factor <- 1.25
-  }
+  factor <- 1.25
   
   ### Get Roster
-  roster <- try(get_roster(team))
+  roster <- try(w_get_roster(team))
   if(class(roster) == "try-error") {
     warning("Unable to get roster. ESPN is updating CBB files. Check back again soon")
     return(NULL)
   }
   roster$name <- gsub("Jr.", "Jr", roster$name)
-  games <- unique(x$game_id)
-  ast <- grep("Assisted", x$description)
-  x <- x[ast, ]
+  games <- unique(pbp_data$game_id)
+  ast <- grep("Assisted", pbp_data$description)
+  x <- pbp_data[ast, ]
   
   ### Get Ast/Shot from ESPN Play Description
   splitplay <- function(description) {
@@ -97,7 +83,7 @@ circle_assist_net <- function(team, season, highlight_player = NA, highlight_col
     return(list("shot_maker" = shot_maker, "assister" = assister))
   }
   
-  x <- mutate(x, "ast" = NA, "shot" = NA)
+  x <- dplyr::mutate(x, "ast" = NA, "shot" = NA)
   for(i in 1:nrow(x)) {
     play <- splitplay(x$description[i])
     x$ast[i] <- play$assister
@@ -144,7 +130,7 @@ circle_assist_net <- function(team, season, highlight_player = NA, highlight_col
   
   ### Create Temporary Directed Network For Stat Aggregation
   net <- igraph::graph.data.frame(network, directed = T)
-  deg <- igraph::degree(net, mode="all")
+  deg <- igraph::degree(net, mode = "all")
   igraph::E(net)$weight <- network$num
   
   ### Compute Clustering Coefficient
@@ -179,13 +165,11 @@ circle_assist_net <- function(team, season, highlight_player = NA, highlight_col
   network <- dplyr::filter(network, shot %in% keep, ast %in% keep)
   
   
-  if(any(season %in% c("2016-17", "2017-18", "2018-19"))) {
-    labs <- NA
-  }
-  else{
-    labs <- as.character(network$num)
-  }
   
+    labs <- as.character(network$num)
+  
+  text <- " Assist Graph"  
+    
   plot_title <-
     ifelse(is.na(message), paste0(text_team, ifelse(three_weights, " Weighted", ""), text), text)
   if(length(unique(x$game_id)) == 1) {
