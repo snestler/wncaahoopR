@@ -21,10 +21,6 @@ wp_chart <- function(pbp_data, home_col = NULL, away_col = NULL, show_legend = T
     away_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$away)]
   }
   
-  
-  
-  
-  
   date <- format(as.Date(pbp_data$date[1]), "%B %d, %Y")
   msec <- max(pbp_data$secs_remaining_absolute)
   

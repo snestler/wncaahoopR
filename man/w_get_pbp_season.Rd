@@ -4,15 +4,18 @@
 \alias{w_get_pbp_season}
 \title{Get Team Play-by-Play Data}
 \usage{
-w_get_pbp_season(team)
+w_get_pbp_game(game_ids)
 }
 \arguments{
 \item{team}{Team to get Play-by-Play data for}
 }
 \value{
-A data-frame of the team's Play-by-Play data for the current season
+A list containing a data frame for each game. Returns a message if no game data is available.
 }
 \description{
+Scrapes ESPN Play-by-Play data for a team's entire season.
+}
+\details{
 Scrapes the current season's Play-by-Play data for desired team. Team
 is assumed to be the ESPN team name, which can be looked up in the ids
 dataframe.

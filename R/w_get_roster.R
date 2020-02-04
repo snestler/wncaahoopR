@@ -3,9 +3,8 @@
 #' @description Gets team roster for current season.
 #' @usage get_roster(team)
 #' 
-#' @param team Team to get roster for
+#' @param team Quoted team name
 #' @return A data-frame of the team's roster for current season. Largely internal.
-#' @return A data-frame of the Play-by-Play data fror desired games.
 #' @importFrom xml2 read_html
 #' @importFrom rvest html_table
 #' @export

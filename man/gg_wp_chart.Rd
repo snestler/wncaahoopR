@@ -9,9 +9,9 @@ gg_wp_chart(.data, home_col, away_col, show_labels)
 \arguments{
 \item{.data}{Play-by-play data returned from w_get_pbp_game}
 
-\item{home_col}{Color of home team for chart}
+\item{home_col}{Color of home team for chart. Defaults to primary, with a backup if nothing is found.}
 
-\item{away_col}{Color of away team for chart}
+\item{away_col}{Color of away team for chart. Defaults to primary, with a backup if nothing is found.}
 
 \item{show_gei}{Logical whether Game Exictement Index and Minimum
 Win Probability metrics should be displayed on the plot. Default = TRUE.}
@@ -25,5 +25,11 @@ and returns a ggplot2 object to show each teams win probability during the game.
 }
 \examples{
 pbp_data <- w_get_pbp_game("401176897")
-gg_wp_chart(pbp_data, "red", "black")
+gg_wp_chart(pbp_data)
+
+# Can also be:
+
+w_get_pbp_game("401176897") \%>\% 
+    gg_wp_chart()
+
 }

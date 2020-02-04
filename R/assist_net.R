@@ -3,10 +3,10 @@
 #' @description This function produces an assist network visualization for a team for a single game (or collection of games).
 #' @usage assist_net(.data)
 #' 
-#' @param .data play-by-play data returned from w_get_pbp_game
+#' @param .data play-by-play data frame returned from w_get_pbp_game function
 #' @param team Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name
 #' @param node_col Color of nodes in network. Can be selected but defaults 
-#' to primary team color and then a backup from one is not found.
+#' to primary team color and then a backup if one is not found.
 #' @param three_weights Logical indicating whether to give extra weight for assisted three point shots.
 #' If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weight 1). Default = `TRUE`.
 #' @param threshold Number between 0-1 indicating minimum percentage of team assists/baskets a player needs to exceed to be included in network. Default = 0.
@@ -22,10 +22,6 @@
 #'  \item{"shot_freq"} - Player percenatge of scoring on team's assisted baskets
 #'  }
 #' @export
-
-# --------------------------
-# NEED TO MAKE WORK WITH PBP OBJECT
-# --------------------------
 
 assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE, 
                        threshold = 0, message = NA, listing = TRUE) {
@@ -49,8 +45,6 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
     node_col <- "#ff5501"
     message("There were no colors found for the specified team -- defaulting to something nice")
   }
-  
-  
   
   text_team <- dict$ESPN_PBP[dict$ESPN == team]
   text_team <- text_team[!is.na(text_team)]

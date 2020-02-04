@@ -4,15 +4,21 @@
 #' @usage gg_wp_chart(.data, home_col, away_col, show_labels)
 #' 
 #' @param .data Play-by-play data returned from w_get_pbp_game
-#' @param home_col Color of home team for chart
-#' @param away_col Color of away team for chart
+#' @param home_col Color of home team for chart. Defaults to primary, with a backup if nothing is found.
+#' @param away_col Color of away team for chart. Defaults to primary, with a backup if nothing is found.
 #' @param show_gei Logical whether Game Exictement Index and Minimum
 #' Win Probability metrics should be displayed on the plot. Default = TRUE.
 #' @details This function takes play-by-play data returned from w_get_pbp_game
 #' and returns a ggplot2 object to show each teams win probability during the game.
 #' @examples
 #' pbp_data <- w_get_pbp_game("401176897")
-#' gg_wp_chart(pbp_data, "red", "black")
+#' gg_wp_chart(pbp_data)
+#' 
+#' # Can also be:
+#' 
+#' w_get_pbp_game("401176897") %>% 
+#'     gg_wp_chart()
+#' 
 #' @importFrom magrittr %>% 
 #' @export
 gg_wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
@@ -76,7 +82,7 @@ gg_wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE
     min_prob <- paste0("Minimum Win Probability for ", home_team, ": ",
                        ifelse(100 * min_prob < 1, "< 1%",
                               paste0(round(100 * min_prob), "%")))
-  }else {
+  } else {
     min_prob <- min(1 - pbp_data$win_prob)
     min_prob <- paste0("Minimum Win Probability for ", away_team, ": ",
                        ifelse(100 * min_prob < 1, "< 1%",
@@ -87,7 +93,6 @@ gg_wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE
   p <- ggplot2::ggplot(x, ggplot2::aes(x = secs_elapsed/60, y = win_prob, group = team, col = team)) +
     ggplot2::geom_line(size = 1) +
     ggplot2::theme_minimal() +
-    # ggplot2::geom_vline(xintercept = plot_lines/60, lty = 2, alpha = 0.5, size = 0.8) +
     ggplot2::labs(x = "Minutes Elapsed",
                   y = element_blank(),
                   col = element_blank(),

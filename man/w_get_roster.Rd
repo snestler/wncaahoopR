@@ -7,12 +7,10 @@
 get_roster(team)
 }
 \arguments{
-\item{team}{Team to get roster for}
+\item{team}{Quoted team name}
 }
 \value{
 A data-frame of the team's roster for current season. Largely internal.
-
-A data-frame of the Play-by-Play data fror desired games.
 }
 \description{
 Gets team roster for current season.

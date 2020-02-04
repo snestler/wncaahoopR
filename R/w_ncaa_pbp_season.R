@@ -3,9 +3,11 @@
 #' Scrapes the current season's Play-by-Play data for desired team. Team
 #' is assumed to be the ESPN team name, which can be looked up in the ids
 #' dataframe.
+#' @description Scrapes ESPN Play-by-Play data for a team's entire season.
+#' @usage w_get_pbp_game(game_ids)
 #'
 #' @param team Team to get Play-by-Play data for
-#' @return A data-frame of the team's Play-by-Play data for the current season
+#' @return A list containing a data frame for each game. Returns a message if no game data is available.
 #' @export
 w_get_pbp_season <- function(team) {
   ### Error Testing

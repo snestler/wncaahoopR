@@ -7,12 +7,12 @@
 assist_net(.data)
 }
 \arguments{
-\item{.data}{play-by-play data returned from w_get_pbp_game}
+\item{.data}{play-by-play data frame returned from w_get_pbp_game function}
 
 \item{team}{Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name}
 
 \item{node_col}{Color of nodes in network. Can be selected but defaults 
-to primary team color and then a backup from one is not found.}
+to primary team color and then a backup if one is not found.}
 
 \item{three_weights}{Logical indicating whether to give extra weight for assisted three point shots.
 If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weight 1). Default = `TRUE`.}
