@@ -18,31 +18,27 @@
 
 w_get_pbp_game <- function(game_ids) {
   load("R/sysdata.rda")
-  ## Error Testing
-  # if(all(is.na(game_ids))) {
-  #   stop("game_ids is missing with no default")
-  # }
-  # 
-  # if(!"wncaahoopR" %in% .packages()) {
-  #   ids <- create_ids_df()
-  # }
-  ### Get Play by Play Data
+
+  if(is.na(game_ids)) {
+    stop("game_ids is missing with no default")
+  }
   
   # testID <- 401176897
   # otID <- 401179779
+  # unplayed <- 401178885
   base_url <- "https://www.espn.com/womens-college-basketball/playbyplay?gameId="
   summary_url <- "https://www.espn.com/womens-college-basketball/game?gameId="
-  j <- 0
   
-  for(i in 1:length(game_ids)) {
-    message(paste0("Scraping Data for Game: ", i, " of ", length(game_ids)))
-    # if(is.nit(game_ids[i])) {
-    #   message("NIT Game--Play by Play Data Not Available at this time")
-    #   next
-    
-    url <- paste(base_url, game_ids[i], sep = "")
+  message(paste0("Scraping Data for Game: ", game_ids))
+  
+  out <- tryCatch({
+    url <- paste(base_url, game_ids, sep = "")
     allHTML <- try(xml2::read_html(url))
     tmp <- rvest::html_table(allHTML, fill = TRUE)
+    
+    if(length(tmp) == 1) {
+      message(paste("Play by Play Data Not Available:", game_ids))
+    }
     
     gameTableIndex <- grep("PLAY", lapply(tmp, function(x) names(x)))
     
@@ -57,23 +53,6 @@ w_get_pbp_game <- function(game_ids) {
     tmp <- do.call("rbind", tmp)
     
     tmp <- tmp[!is.na(names(tmp))]
-    
-    ### Check if PBP Data is Available
-    # if(length(tmp) == 0) {
-    #   message("Play by Play Data Not Available")
-    #   next
-    # }else if(length(tmp) < ncol(tmp[[1]]) | length(tmp) == 0) {
-    #   message("Play by Play Data Not Available")
-    #   next
-    # }else{
-    #   t1 <- as.numeric(unlist(strsplit(as.character(tmp[[2]][2,1]), ":")))
-    #   t2 <- as.numeric(unlist(strsplit(as.character(tmp[[2]][5,1]), ":")))
-    #   if(60 * t1[1] + t1[2] < 60 * t2[1] + t2[2]) {
-    #     message("Game In Progress--Play by Play Data Not Available. Please Check Back After the Game")
-    #     next
-    #   }
-    #   j <- j + 1
-    # }
     
     pbp <- tmp %>% 
       dplyr::mutate(play_id = 1:nrow(.),
@@ -102,7 +81,7 @@ w_get_pbp_game <- function(game_ids) {
     pbp[these, c("home_score", "away_score")] <- pbp[these - 1 , c("home_score", "away_score")]
     
     ### Get full team names
-    url2 <- paste(summary_url, game_ids[i], sep = "")
+    url2 <- paste(summary_url, game_ids, sep = "")
     tmp <- xml2::read_html(url2) %>% 
       rvest::html_table(fill = TRUE)
     pbp$away <- as.character(as.data.frame(tmp[[2]])[1,1])
@@ -127,7 +106,7 @@ w_get_pbp_game <- function(game_ids) {
     # }
     
     pbp$home_favored_by <- NA
-    pbp$game_id <- game_ids[i]
+    pbp$game_id <- game_ids
     pbp$date <- allHTML %>% 
       html_nodes("title") %>%
       html_text() %>% 
@@ -240,7 +219,8 @@ w_get_pbp_game <- function(game_ids) {
     }
     
     return(pbp_all)
-    
-  }
-}  
-  
+  }, 
+  error = function(e) {
+    return(paste("No data available for", game_ids))
+  })
+}
