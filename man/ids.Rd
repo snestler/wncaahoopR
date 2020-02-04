@@ -11,7 +11,7 @@
  \item{link}{team URL link; used in ESPN URLs}
 }}
 \usage{
-NOT SURE WHAT TO PUT HERE
+data(ids)
 }
 \description{
 Provides a data frame with ESPN team names for use in the wncaahoopR package.
