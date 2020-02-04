@@ -1,102 +1,120 @@
-#' Win Probability Chart
-#'
-#' @description Renders win proability chart for desired game.
-#' @usage wp_chart(pbp_data, home_col, away_col, show_legend)
+#' Win Probability Charts in ggplot
 #' 
-#' @param pbp_data Play-by-play data returned from w_get_pbp_game
-#' @param home_col Color of home team for chart
-#' @param away_col Color of away team for chart
-#' @param show_legend Logical indicating whether or not to display legend and min win probability
-#' on the chart. Default = TRUE
+#' @description This function creates a win probability chart over the game duration.
+#' @usage gg_wp_chart(.data, home_col, away_col, show_labels)
+#' 
+#' @param .data Play-by-play data returned from w_get_pbp_game
+#' @param home_col Color of home team for chart. Defaults to primary, with a backup if nothing is found.
+#' @param away_col Color of away team for chart. Defaults to primary, with a backup if nothing is found.
+#' @param show_gei Logical whether Game Exictement Index and Minimum
+#' Win Probability metrics should be displayed on the plot. Default = TRUE.
+#' @details This function takes play-by-play data returned from w_get_pbp_game
+#' and returns a ggplot2 object to show each teams win probability during the game.
+#' @examples
+#' pbp_data <- w_get_pbp_game("401176897")
+#' gg_wp_chart(pbp_data)
+#' 
+#' # Can also be:
+#' 
+#' w_get_pbp_game("401176897") %>% 
+#'     gg_wp_chart()
+#' 
+#' @importFrom magrittr %>% 
 #' @export
-wp_chart <- function(pbp_data, home_col = NULL, away_col = NULL, show_legend = TRUE) {
-  ### Error Testing
-  if(is.na(pbp_data)) {
+wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
+  
+  pbp_data <- .data
+  
+  if(is.na(.data)) {
     stop("game_id is missing with no default")
   }
   if(is.null(home_col)) {
     home_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$home)]
   }
+  
+  if(length(home_col) == 0) {
+    home_col <- "red"
+    message("There were no colors found for the home team -- defaulting to red.")
+  }
+  
   if(is.null(away_col)) {
     away_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == unique(pbp_data$away)]
   }
   
-  date <- format(as.Date(pbp_data$date[1]), "%B %d, %Y")
-  msec <- max(pbp_data$secs_remaining_absolute)
+  if(length(away_col) == 0) {
+    away_col <- "black"
+    message("There were no colors found for the away team -- defaulting to black.")
+  }
   
-  ### Cleaning
-  pbp_data$scorediff <- pbp_data$home_score - pbp_data$away_score
-  if(is.na(pbp_data$home_favored_by[1])) {
-    pbp_data$home_favored_by <- get_line(pbp_data)
+  ### Get Data
+  home_team <- pbp_data$home[1]
+  away_team <- pbp_data$away[1]
+  plot_lines <- 1200
+  msec <- max(pbp_data$secs_remaining_absolute)
+  sec <- msec - 2400
+  ot_counter <- 0
+  while(sec > 0) {
+    sec <- sec - 300
+    plot_lines <- c(plot_lines, 2400 + ot_counter * 300)
+    ot_counter <- ot_counter + 1
   }
-  if(!is.na(pbp_data$home_favored_by[1])){
-    pbp_data$pre_game_prob <- predict(prior, newdata = data.frame(pred_score_diff = pbp_data$home_favored_by),
-                                  type = "response")
-  }else{
-    pbp_data$pre_game_prob <- 0.5
-  }
+  date <- format(as.Date(pbp_data$date[1]), "%B %d, %Y")
+  
+  ### Get in to Appropropriate Format
+  x <- rbind(
+    dplyr::select(pbp_data, secs_remaining_absolute, win_prob) %>%
+      dplyr::mutate(team = "home"),
+    dplyr::select(pbp_data, secs_remaining_absolute, win_prob) %>%
+      dplyr::mutate("win_prob" = 1 - win_prob,
+                    team = "away")
+  ) %>%
+    dplyr::mutate("secs_elapsed" = max(secs_remaining_absolute) - secs_remaining_absolute)
   
   ### Game Excitemant Index
   pbp_data$wp_delta <- 0
-  for(i in 2:nrow(pbp_data)) {
-    pbp_data$wp_delta[i] <- abs(pbp_data$win_prob[i] - pbp_data$win_prob[i-1])
-  }
-  gei <- sum(pbp_data$wp_delta, na.rm = T) * 2400/msec
+  pbp_data$wp_delta <- abs(pbp_data$win_prob - dplyr::lead(pbp_data$win_prob))
+  gei <- sum(pbp_data$wp_delta, na.rm = TRUE) * 2400/msec
   gei <- paste("Game Excitement Index:", round(gei, 2))
-  gap <- 0.08
   
-  ### Plot Results
-  pbp_data$secs_elapsed <- max(pbp_data$secs_remaining_absolute) - pbp_data$secs_remaining_absolute
-  title <- paste("Win Probability Chart for", pbp_data$away[1], "vs.", pbp_data$home[1],"\n", date[1])
-  if(pbp_data$scorediff[nrow(pbp_data)] < 0) {
-    plot(win_prob ~ secs_elapsed, data = pbp_data, col = home_col, type = "l", lwd = 3, ylim = c(0,1),
-         xlab = "Seconds Elapsed", ylab = "Win Probability", main = title)
-    par(new = T)
-    plot((1 - win_prob) ~ secs_elapsed, data = pbp_data, col = away_col, type = "l", lwd = 3, ylim = c(0,1),
-         xlab = "", ylab = "", main = "")
-    abline(h = 0.5, lty = 2)
-  }
-  else{
-    plot((1 - win_prob) ~ secs_elapsed, data = pbp_data, col = away_col, type = "l", lwd = 3, ylim = c(0,1),
-         xlab = "Seconds Elapsed", ylab = "Win Probability", main = title)
-    par(new = T)
-    plot(win_prob ~ secs_elapsed, data = pbp_data, col = home_col, type = "l", lwd = 3, ylim = c(0,1),
-         xlab = "", ylab = "", main = "")
-    abline(h = 0.5, lty = 2)
-  }
-  if(show_legend) {
-    gap <- 0.02
-    if(pbp_data$win_prob[1] < 0.85) {
-      legend("topleft", col = c(home_col, away_col), legend = c(pbp_data$home[1], pbp_data$away[1]), lty = 1,
-             cex = 0.5)
-    }
-    else{
-      legend("left", col = c(home_col, away_col), legend = c(pbp_data$home[1], pbp_data$away[1]), lty = 1,
-             cex = 0.5)
-    }
-  }
-  
-  ### Min Win Prob
+  ### Minimum Win Probability
   if(pbp_data$score_diff[nrow(pbp_data)] > 0) {
-    min_prob <- min(pbp_data$win_prob, na.rm = T)
-    if(min_prob < 0.01) {
-      min_prob <- paste("Minimum Win Probability for", pbp_data$home[1], "< 1", "%")
-    }
-    else{
-      min_prob <- paste("Minimum Win Probability for", pbp_data$home[1], round(100 * min_prob, 1), "%")
-    }
+    min_prob <- min(pbp_data$win_prob)
+    min_prob <- paste0("Minimum Win Probability for ", home_team, ": ",
+                       ifelse(100 * min_prob < 1, "< 1%",
+                              paste0(round(100 * min_prob), "%")))
+  } else {
+    min_prob <- min(1 - pbp_data$win_prob)
+    min_prob <- paste0("Minimum Win Probability for ", away_team, ": ",
+                       ifelse(100 * min_prob < 1, "< 1%",
+                              paste0(round(100 * min_prob), "%")))
   }
-  else{
-    min_prob <- min(1 - pbp_data$win_prob, na.rm = T)
-    if(min_prob < 0.01) {
-      min_prob <- paste("Minimum Win Probability for", pbp_data$away[1], "< 1", "%")
-    }
-    else{
-      min_prob <- paste("Minimum Win Probability for", pbp_data$away[1], round(100 * min_prob, 1), "%")
-    }
+  
+  ### Make Plot
+  p <- ggplot2::ggplot(x, ggplot2::aes(x = secs_elapsed/60, y = win_prob, group = team, col = team)) +
+    ggplot2::geom_line(size = 1) +
+    ggplot2::theme_minimal() +
+    ggplot2::labs(x = "Minutes Elapsed",
+                  y = element_blank(),
+                  col = element_blank(),
+                  title = paste("Win Probability Chart for", home_team, "vs.", away_team),
+                  subtitle = date) +
+    ggplot2::theme(plot.title = element_text(size = 16),
+                   plot.subtitle = element_text(size = 12),
+                   axis.title = element_text(size = 14),
+                   legend.position = "top", 
+                   legend.justification = "left",
+                   panel.grid.minor.y = element_blank(), 
+                   panel.grid.minor.x = element_blank(),
+                   panel.grid.major = element_line(size = .1)) +
+    ggplot2::scale_x_continuous(breaks = seq(0, msec/60, 5)) +
+    ggplot2::scale_y_continuous(labels = function(x) {paste(100 * x, "%", sep = "")}) +
+    ggplot2::scale_color_manual(values = c(away_col, home_col),
+                                labels = c(away_team, home_team))
+  if(show_gei) {
+    p <- p +
+      ggplot2::annotate("text", x = 5, y = 0.05, label = gei) +
+      ggplot2::annotate("text", x = 5, y = 0.025, label = min_prob)
   }
-  if(show_legend) {
-    text(600, 2 * gap, min_prob, cex = 0.8)
-    text(600, gap, gei, cex = 0.8)
-  }
+  
+  p
 }
