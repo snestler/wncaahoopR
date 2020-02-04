@@ -7,9 +7,9 @@
 assist_net(.data)
 }
 \arguments{
-\item{.data}{lay-by-play data returned from w_get_pbp_game}
+\item{.data}{play-by-play data returned from w_get_pbp_game}
 
-\item{team}{Team to create network for}
+\item{team}{Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name}
 
 \item{node_col}{Color of nodes in network. Can be selected but defaults 
 to primary team color and then a backup from one is not found.}

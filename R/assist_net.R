@@ -3,8 +3,8 @@
 #' @description This function produces an assist network visualization for a team for a single game (or collection of games).
 #' @usage assist_net(.data)
 #' 
-#' @param .data lay-by-play data returned from w_get_pbp_game
-#' @param team Team to create network for
+#' @param .data play-by-play data returned from w_get_pbp_game
+#' @param team Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name
 #' @param node_col Color of nodes in network. Can be selected but defaults 
 #' to primary team color and then a backup from one is not found.
 #' @param three_weights Logical indicating whether to give extra weight for assisted three point shots.
@@ -36,6 +36,11 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
     stop("pbp_data is missing with no default")
   }
   
+  if(is.character(substitute(team)) == FALSE) {
+    team <- unique(pbp_data[, deparse(substitute(team))])
+  }
+  
+  
   if(is.null(node_col)) {
     node_col <- ncaa_colors$primary_color[ncaa_colors$espn_name == team]
   }
@@ -44,6 +49,8 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
     node_col <- "#ff5501"
     message("There were no colors found for the specified team -- defaulting to something nice")
   }
+  
+  
   
   text_team <- dict$ESPN_PBP[dict$ESPN == team]
   text_team <- text_team[!is.na(text_team)]
