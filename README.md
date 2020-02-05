@@ -6,6 +6,8 @@ This package relies heavily on the work done by Luke Benz (lbenz430) in his pack
 
 `wncaahoopR` also scrapes data from ESPN, but differs in that it does not have scraping provided in multiple functions, choosing to only scan in the data once and then makes use of that `pbp` object within R to produce win-probability and game flow charts, as well as assist networks.
 
+`wncaahoopR` is a joint effort between Seth Berry (saberry) and Scott Nestler (snestler).  They welcome bug identification and ideas via the Issues tab, but please look at open issues before creating a new one.
+
 ## Installation
 You can install `wncaahoopR` from GitHub with:
 
@@ -19,7 +21,7 @@ Several functions use ESPN game_ids. You can find the game_id in the URL for the
 ![game_id](figures/espn.png)
 
 ### Scraping Data
-* ```get_pbp_game(game_ids)```:  Get play-by-play data for a specific vector of ESPN game_ids.
+* ```get_pbp_game(game_ids)```:  Get play-by-play data for a specific vector of one or more ESPN game_ids.
 * ```get_pbp_season(team, season)```: Game entire current season's worth of play-by-play data for a given team and season. `season` defaults to current season, but can be specified in "2019-20" form. 
 * ```get_roster(team, season)```: Get a particular team's roster, `season` defaults to current season, but can be specified in "2019-20" form. 
 * ```get_game_ids(team, season)```: Get a vector of ESPN game_ids for all games in which ```team``` plays in. `season` defaults to current season, but can be specified in "2019-20" form. 
@@ -119,7 +121,7 @@ __Circle Assist Networks and Player Highlighting__
  
 
 * `ncaa_name`: The name of the team, as listed on the NCAA website (same as `dict$NCAA`)
-* `espn_name`: The name of the team, as listed on the ESPN URLs (same as dict$ESPN)}
+* `espn_name`: The name of the team, as listed on the ESPN URLs (same as `dict$ESPN`)}
 * `primary_color`: Hexcode for team's primary color.
 * `secondary_color`: Hexcode for team's secondary color, when available.
 * `tertiary_color`: Hexcode for team's tertiary color, when available.
@@ -136,26 +138,28 @@ These datasets can be loaded by typing ```data("ids")```, `data("ncaa_colors")`,
 ## Examples
 
 #### Creating a PBP Object
-```Oregon_UConn <- w_get_pbp_game(401169340)```
+```ND_Mich <- w_get_pbp_game(401171130)```
 
 #### Win Probability Charts
-![wp](figures/wp_chart_UConn_Oregon.png)
-```gg_wp_chart(Oregon_UConn)```
+![wp](figures/wp_chart_ND_Mich_default.png)
+```wp_chart(ND_Mich)```
+
+![wp](figures/wp_chart_ND_Mich_contrast.png)
+```wp_chart(ND_Mich, away_col = "#C99700")```
 
 #### Game Flow Chart
-![game_flow](figures/game_flow_UConn_Oregon.png)
-```game_flow(Oregon_UConn)```
+![game_flow](figures/game_flow_ND_Mich.png)
+```game_flow(ND_Mich, away_col = "#C99700")```
 
 #### Single-Game Assist Network
-![Assist Single](figures/assist_net_Oregon.png)
-```assist_net(Oregon_UConn, team = "Oregon")```
+![Assist Single](figures/assist_net_NotreDame.png)
+```assist_net(ND_Mich, team = "Notre Dame")```
 
 #### Circle Assist Networks
-![Oregon](figures/circle_assist_net_Oregon.png)
-```circle_assist_net(Oregon_UConn, team = "Oregon")```
+![Oregon](figures/circle_assist_net_NotreDame.png)
+```circle_assist_net(ND_Mich, team = "Notre Dame")```
 
-![Ionescu](figures/circle_assist_net_Oregon.png)
-```circle_assist_net(Oregon_UConn, "Oregon", highlight_player = "Sabrina Ionescu", highlight_color ="#FECB00")```
+Put something here once player highlighting works.
 
 ## Glossary
 Play-by-Play files contain the following variables:
