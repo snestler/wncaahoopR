@@ -30,7 +30,7 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   
   pbp_data <- .data
   ### Error Testing
-  if(is.na(pbp_data)) {
+  if(is.null(pbp_data)) {
     stop("pbp_data is missing with no default")
   }
   

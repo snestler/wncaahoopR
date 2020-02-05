@@ -25,7 +25,7 @@ wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
   
   pbp_data <- .data
   
-  if(is.na(.data)) {
+  if(is.null(.data)) {
     stop("game_id is missing with no default")
   }
   if(is.null(home_col)) {

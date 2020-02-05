@@ -8,7 +8,7 @@
 #' @export
 average_score_diff <- function(pbp_data) {
   ### Error Testing
-  if(is.na(pbp_data)) {
+  if(is.null(pbp_data)) {
     stop("game_id is missing with no default")
   }
   

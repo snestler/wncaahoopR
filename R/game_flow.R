@@ -24,7 +24,7 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
   
   pbp_data <- .data
   
-  if(is.na(pbp_data)) {
+  if(is.null(pbp_data)) {
     stop("game_id is missing with no default")
   }
   if(is.null(home_col)) {

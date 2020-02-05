@@ -10,7 +10,7 @@
 #' @export
 w_get_roster <- function(team) {
   ### Error Testing
-  if(is.na(team)) {
+  if(is.null(team)) {
     stop("team is missing with no default")
   }
   if(!team %in% ids$team) {

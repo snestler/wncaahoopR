@@ -8,7 +8,7 @@
 #' @export
 game_excitement_index <- function(pbp_data) {
   ### Error Testing
-  if(is.na(pbp_data)) {
+  if(is.null(pbp_data)) {
     stop("pbp_data is missing with no default")
   }
   

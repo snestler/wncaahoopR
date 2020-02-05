@@ -8,7 +8,7 @@
 #' @export
 average_win_prob <- function(pbp_data) {
   ### Error Testing
-  if(is.na(pbp_data)) {
+  if(is.null(pbp_data)) {
     stop("pbp_data is missing with no default")
   }
   avg_wp <- sum(pbp_data$play_length * pbp_data$win_prob/max(pbp_data$secs_remaining_absolute), 

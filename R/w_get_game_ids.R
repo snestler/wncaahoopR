@@ -11,7 +11,7 @@
 #' @export
 w_get_game_ids <- function(team) {
   ### Error Testing
-  if(is.na(team)) {
+  if(is.null(team)) {
     stop("team is missing with no default")
   }
   base_url <- "http://www.espn.com/womens-college-basketball/team/_/id/"

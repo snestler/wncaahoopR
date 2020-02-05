@@ -28,7 +28,7 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
                               threshold = 0, message = NA, listing = TRUE) {
   pbp_data <- .data
   ### Error Testing
-  if(is.na(pbp_data)) {
+  if(is.null(pbp_data)) {
     stop("pbp_data is missing with no default")
   }
   

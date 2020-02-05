@@ -19,7 +19,7 @@
 w_get_pbp_game <- function(game_ids) {
   load("R/sysdata.rda")
 
-  if(is.na(game_ids)) {
+  if(is.null(game_ids)) {
     stop("game_ids is missing with no default")
   }
   
