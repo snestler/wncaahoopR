@@ -95,10 +95,10 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   # }
   
   x$shot <- regmatches(x$description, 
-                       regexpr(".*(?=\\smade)", x$description, perl = TRUE))
+                       regexpr(".*(?=\\smade\\s)", x$description, perl = TRUE))
   
   x$ast <- regmatches(x$description, 
-                      regexpr("(?<=by\\s).*(?=\\.)", x$description, perl = TRUE))
+                      regexpr("(?<=\\sby\\s).*(?=\\.)", x$description, perl = TRUE))
   
   ### Get only shots made by the team in question
   # x$ast <- gsub("Jr.", "Jr", x$ast)
