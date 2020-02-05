@@ -24,7 +24,8 @@
 #'  @importFrom dplyr group_by
 #'  @importFrom dplyr summarize
 #' @export
-circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = NA, three_weights = TRUE, 
+circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = NA, 
+                              highlight_color = NA, three_weights = TRUE, 
                               threshold = 0, message = NA, listing = TRUE) {
   pbp_data <- .data
   ### Error Testing

@@ -9,6 +9,7 @@ Authors@R:
 Description: What the package does (one paragraph).
 Imports:
     dplyr,
+    grid,
     ggplot2,
     igraph,
     magrittr,
