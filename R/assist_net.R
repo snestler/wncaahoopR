@@ -68,12 +68,12 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
     factor <- 1.25
   
   ### Get Roster
-  roster <- try(w_get_roster(team))
-  if(class(roster) == "try-error") {
-    warning("Unable to get roster. ESPN is updating CBB files. Check back again soon")
-    return(NULL)
-  }
-  roster$name <- gsub("Jr.", "Jr", roster$name)
+  # roster <- try(w_get_roster(team))
+  # if(class(roster) == "try-error") {
+  #   warning("Unable to get roster. ESPN is updating CBB files. Check back again soon")
+  #   return(NULL)
+  # }
+  # roster$name <- gsub("Jr.", "Jr", roster$name)
   games <- unique(pbp_data$game_id)
   ast <- grep("Assisted", pbp_data$description)
   x <- pbp_data[ast, ]
@@ -139,7 +139,9 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   network$a_freq <- network$num/sum(network$num)
   network <- dplyr::filter(network, a_freq > 0)
   player_asts <-
-    sapply(roster$name, function(name) { sum(network$a_freq[network$ast == name | network$shot == name]) })
+    sapply(unique(unlist(network[, c("ast", "shot")])), function(name) { 
+      sum(network$a_freq[network$ast == name | network$shot == name]) 
+    })
   
   ### Team Ast/Shot Distributions
   ast_data <- aggregate(a_freq ~ ast, data = network, sum)

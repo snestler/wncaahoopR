@@ -65,12 +65,12 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   factor <- 1.25
   
   ### Get Roster
-  roster <- try(w_get_roster(team))
-  if(class(roster) == "try-error") {
-    warning("Unable to get roster. ESPN is updating CBB files. Check back again soon")
-    return(NULL)
-  }
-  roster$name <- gsub("Jr.", "Jr", roster$name)
+  # roster <- try(w_get_roster(team))
+  # if(class(roster) == "try-error") {
+  #   warning("Unable to get roster. ESPN is updating CBB files. Check back again soon")
+  #   return(NULL)
+  # }
+  # roster$name <- gsub("Jr.", "Jr", roster$name)
   games <- unique(pbp_data$game_id)
   ast <- grep("Assisted", pbp_data$description)
   x <- pbp_data[ast, ]
@@ -105,10 +105,10 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   x$shot <- gsub("Jr.", "Jr", x$shot)
   x <- x[is.element(x$ast, roster$name), ]
   
-  sets <- 2 * choose(nrow(roster), 2)
-  network <- data.frame("ast" = rep(NA, sets),
-                        "shot" = rep(NA, sets),
-                        "num" = rep(NA, sets))
+  # sets <- 2 * choose(nrow(roster), 2)
+  # network <- data.frame("ast" = rep(NA, sets),
+  #                       "shot" = rep(NA, sets),
+  #                       "num" = rep(NA, sets))
   
   ### Adjust Three Point Weights in Network
   x$weights <- 1
@@ -136,7 +136,9 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   network$a_freq <- network$num/sum(network$num)
   network <- dplyr::filter(network, a_freq > 0)
   player_asts <-
-    sapply(roster$name, function(name) { sum(network$a_freq[network$ast == name | network$shot == name]) })
+    sapply(unique(unlist(network[, c("ast", "shot")])), function(name) { 
+      sum(network$a_freq[network$ast == name | network$shot == name]) 
+    })
   
   ### Team Ast/Shot Distributions
   ast_data <- aggregate(a_freq ~ ast, data = network, sum)
