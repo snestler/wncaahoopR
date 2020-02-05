@@ -101,9 +101,9 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
                       regexpr("(?<=by\\s).*(?=\\.)", x$description, perl = TRUE))
   
   ### Get only shots made by the team in question
-  x$ast <- gsub("Jr.", "Jr", x$ast)
-  x$shot <- gsub("Jr.", "Jr", x$shot)
-  x <- x[is.element(x$ast, roster$name), ]
+  # x$ast <- gsub("Jr.", "Jr", x$ast)
+  # x$shot <- gsub("Jr.", "Jr", x$shot)
+  # x <- x[is.element(x$ast, roster$name), ]
   
   # sets <- 2 * choose(nrow(roster), 2)
   # network <- data.frame("ast" = rep(NA, sets),

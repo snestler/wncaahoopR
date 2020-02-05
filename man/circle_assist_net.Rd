@@ -4,7 +4,7 @@
 \alias{circle_assist_net}
 \title{Circle Assist Network}
 \usage{
-circle_assist_net(.data, team)
+circle_assist_net(.data, team, highlight_player, highligh_color)
 }
 \arguments{
 \item{.data}{play-by-play data frame returned from w_get_pbp_game function}
