@@ -159,7 +159,8 @@ These datasets can be loaded by typing ```data("ids")```, `data("ncaa_colors")`,
 ![Oregon](figures/circle_assist_net_NotreDame.png)
 ```circle_assist_net(ND_Mich, team = "Notre Dame")```
 
-Put something here once player highlighting works.
+![Brunelle Highlight](figures/circle_assist_net_NotreDame_Brunelle.png)
+```circle_assist_net(ND_Mich, team = "Notre Dame", highlight_player = "Sam Brunelle", highlight_color = "#C99700")```
 
 ## Glossary
 Play-by-Play files contain the following variables:
