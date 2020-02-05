@@ -4,18 +4,15 @@
 \alias{circle_assist_net}
 \title{Circle Assist Network}
 \usage{
-circle_assist_net(pbp_data)
+circle_assist_net(.data, team)
 }
 \arguments{
-\item{team}{Team to create network for}
+\item{.data}{play-by-play data frame returned from w_get_pbp_game function}
 
-\item{season}{Season, as a character,  (e.g. "2018-19"), or vector of ESPN game_ids.
-for which data to use in network. Currently only handles the current season worth of data.}
+\item{team}{Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name.}
 
 \item{highlight_player}{Name of player to highlight in assist network. `NA` yields full team assist
 network with no player highlighting. Default = `NA`.}
-
-\item{highlight_color}{Color of player links to be highlighted. `NA` if ```highlight_player``` is `NA`.}
 
 \item{three_weights}{Logical indicating whether to give extra weight for assisted three point shots.
 If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weight 1). Default = `TRUE`.}
@@ -25,6 +22,8 @@ If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weig
 \item{message}{User supplied plot title to overwrite default plot title, if desired. Default = `NA`.}
 
 \item{listing}{Allows disabling the return of list of network statistics}
+
+\item{highlight_color}{Color of player links to be highlighted. `NA` if ```highlight_player``` is `NA`.}
 }
 \value{
 List with network statistics
@@ -36,6 +35,8 @@ List with network statistics
  \item{"ast_freq"} - Player percentage of team's assists
  \item{"shot_freq"} - Player percenatge of scoring on team's assisted baskets
  }
+ @importFrom dplyr group_by
+ @importFrom dplyr summarize
 }
 \description{
 This function produces an assist network visualization for a team for a single game (or collection of games).

@@ -33,6 +33,8 @@ List with network statistics
  \item{"ast_freq"} - Player percentage of team's assists
  \item{"shot_freq"} - Player percenatge of scoring on team's assisted baskets
  }
+ @importFrom dplyr group_by
+ @importFrom dplyr summarize
 }
 \description{
 This function produces an assist network visualization for a team for a single game (or collection of games).

@@ -2,20 +2,34 @@
 % Please edit documentation in R/wp_chart.R
 \name{wp_chart}
 \alias{wp_chart}
-\title{Win Probability Chart}
+\title{Win Probability Charts in ggplot}
 \usage{
-wp_chart(pbp_data, home_col, away_col, show_legend)
+gg_wp_chart(.data, home_col, away_col, show_labels)
 }
 \arguments{
-\item{pbp_data}{Play-by-play data returned from w_get_pbp_game}
+\item{.data}{Play-by-play data returned from w_get_pbp_game}
 
-\item{home_col}{Color of home team for chart}
+\item{home_col}{Color of home team for chart. Defaults to primary, with a backup if nothing is found.}
 
-\item{away_col}{Color of away team for chart}
+\item{away_col}{Color of away team for chart. Defaults to primary, with a backup if nothing is found.}
 
-\item{show_legend}{Logical indicating whether or not to display legend and min win probability
-on the chart. Default = TRUE}
+\item{show_gei}{Logical whether Game Exictement Index and Minimum
+Win Probability metrics should be displayed on the plot. Default = TRUE.}
 }
 \description{
-Renders win proability chart for desired game.
+This function creates a win probability chart over the game duration.
+}
+\details{
+This function takes play-by-play data returned from w_get_pbp_game
+and returns a ggplot2 object to show each teams win probability during the game.
+}
+\examples{
+pbp_data <- w_get_pbp_game("401176897")
+gg_wp_chart(pbp_data)
+
+# Can also be:
+
+w_get_pbp_game("401176897") \%>\% 
+    gg_wp_chart()
+
 }

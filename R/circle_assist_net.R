@@ -1,11 +1,9 @@
 #' Circle Assist Network
 #'
 #' @description This function produces an assist network visualization for a team for a single game (or collection of games).
-#' @usage circle_assist_net(pbp_data)
-#' 
-#' @param team Team to create network for
-#' @param season Season, as a character,  (e.g. "2018-19"), or vector of ESPN game_ids.
-#' for which data to use in network. Currently only handles the current season worth of data.
+#' @usage circle_assist_net(.data, team)
+#' @param .data play-by-play data frame returned from w_get_pbp_game function 
+#' @param team Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name.
 #' @param highlight_player Name of player to highlight in assist network. `NA` yields full team assist
 #' network with no player highlighting. Default = `NA`.
 #' @param highlight_color Color of player links to be highlighted. `NA` if ```highlight_player``` is `NA`.
@@ -23,6 +21,8 @@
 #'  \item{"ast_freq"} - Player percentage of team's assists
 #'  \item{"shot_freq"} - Player percenatge of scoring on team's assisted baskets
 #'  }
+#'  @importFrom dplyr group_by
+#'  @importFrom dplyr summarize
 #' @export
 circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = NA, three_weights = TRUE, 
                               threshold = 0, message = NA, listing = TRUE) {
@@ -30,6 +30,10 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   ### Error Testing
   if(is.na(pbp_data)) {
     stop("pbp_data is missing with no default")
+  }
+  
+  if(is.character(substitute(team)) == FALSE) {
+    team <- unique(pbp_data[, deparse(substitute(team))])
   }
   
   if(is.null(node_col)) {
@@ -72,23 +76,29 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   x <- pbp_data[ast, ]
   
   ### Get Ast/Shot from ESPN Play Description
-  splitplay <- function(description) {
-    tmp <- strsplit(strsplit(description, "Assisted")[[1]], " ")
-    n1 <- grep("made", tmp[[1]])
-    n1 <- n1[length(n1)]
-    n2 <- length(tmp[[2]])
-    tmp[[2]][n2] <- substring(tmp[[2]][n2], 1, nchar(tmp[[2]][n2]) - 1)
-    shot_maker <- paste(tmp[[1]][1:(n1-1)], collapse = " ")
-    assister <- paste(tmp[[2]][3:n2], collapse = " ")
-    return(list("shot_maker" = shot_maker, "assister" = assister))
-  }
+  # splitplay <- function(description) {
+  #   tmp <- strsplit(strsplit(description, "Assisted")[[1]], " ")
+  #   n1 <- grep("made", tmp[[1]])
+  #   n1 <- n1[length(n1)]
+  #   n2 <- length(tmp[[2]])
+  #   tmp[[2]][n2] <- substring(tmp[[2]][n2], 1, nchar(tmp[[2]][n2]) - 1)
+  #   shot_maker <- paste(tmp[[1]][1:(n1-1)], collapse = " ")
+  #   assister <- paste(tmp[[2]][3:n2], collapse = " ")
+  #   return(list("shot_maker" = shot_maker, "assister" = assister))
+  # }
+  # 
+  # x <- dplyr::mutate(x, "ast" = NA, "shot" = NA)
+  # for(i in 1:nrow(x)) {
+  #   play <- splitplay(x$description[i])
+  #   x$ast[i] <- play$assister
+  #   x$shot[i] <- play$shot_maker
+  # }
   
-  x <- dplyr::mutate(x, "ast" = NA, "shot" = NA)
-  for(i in 1:nrow(x)) {
-    play <- splitplay(x$description[i])
-    x$ast[i] <- play$assister
-    x$shot[i] <- play$shot_maker
-  }
+  x$shot <- regmatches(x$description, 
+                       regexpr(".*(?=\\smade)", x$description, perl = TRUE))
+  
+  x$ast <- regmatches(x$description, 
+                      regexpr("(?<=by\\s).*(?=\\.)", x$description, perl = TRUE))
   
   ### Get only shots made by the team in question
   x$ast <- gsub("Jr.", "Jr", x$ast)
@@ -108,16 +118,20 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   }
   
   ### Aggregate Assists
-  for(i in 1:nrow(roster)) {
-    ast <- roster$name[i]
-    tmp <- roster[roster$name != ast,]
-    for(j in 1:nrow(tmp)) {
-      index <- j + (i - 1) * nrow(tmp)
-      network$ast[index] <- ast
-      network$shot[index] <- tmp$name[j]
-      network$num[index] <- sum(x$weights[x$ast == ast & x$shot == tmp$name[j]])
-    }
-  }
+  # for(i in 1:nrow(roster)) {
+  #   ast <- roster$name[i]
+  #   tmp <- roster[roster$name != ast,]
+  #   for(j in 1:nrow(tmp)) {
+  #     index <- j + (i - 1) * nrow(tmp)
+  #     network$ast[index] <- ast
+  #     network$shot[index] <- tmp$name[j]
+  #     network$num[index] <- sum(x$weights[x$ast == ast & x$shot == tmp$name[j]])
+  #   }
+  # }
+  
+  network <- x %>% 
+    group_by(ast, shot) %>% 
+    summarize(num = sum(weights))
   
   network$a_freq <- network$num/sum(network$num)
   network <- dplyr::filter(network, a_freq > 0)

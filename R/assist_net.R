@@ -21,6 +21,8 @@
 #'  \item{"ast_freq"} - Player percentage of team's assists
 #'  \item{"shot_freq"} - Player percenatge of scoring on team's assisted baskets
 #'  }
+#'  @importFrom dplyr group_by
+#'  @importFrom dplyr summarize
 #' @export
 
 assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE, 
@@ -77,33 +79,39 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   x <- pbp_data[ast, ]
   
   ### Get Ast/Shot from ESPN Play Description
-  splitplay <- function(description) {
-    tmp <- strsplit(strsplit(description, "Assisted")[[1]], " ")
-    n1 <- grep("made", tmp[[1]])
-    n1 <- n1[length(n1)]
-    n2 <- length(tmp[[2]])
-    tmp[[2]][n2] <- substring(tmp[[2]][n2], 1, nchar(tmp[[2]][n2]) - 1)
-    shot_maker <- paste(tmp[[1]][1:(n1-1)], collapse = " ")
-    assister <- paste(tmp[[2]][3:n2], collapse = " ")
-    return(list("shot_maker" = shot_maker, "assister" = assister))
-  }
+  # splitplay <- function(description) {
+  #   tmp <- strsplit(strsplit(description, "Assisted")[[1]], " ")
+  #   n1 <- grep("made", tmp[[1]])
+  #   n1 <- n1[length(n1)]
+  #   n2 <- length(tmp[[2]])
+  #   tmp[[2]][n2] <- substring(tmp[[2]][n2], 1, nchar(tmp[[2]][n2]) - 1)
+  #   shot_maker <- paste(tmp[[1]][1:(n1-1)], collapse = " ")
+  #   assister <- paste(tmp[[2]][3:n2], collapse = " ")
+  #   return(list("shot_maker" = shot_maker, "assister" = assister))
+  # }
   
-  x <- dplyr::mutate(x, "ast" = NA, "shot" = NA)
-  for(i in 1:nrow(x)) {
-    play <- splitplay(x$description[i])
-    x$ast[i] <- play$assister
-    x$shot[i] <- play$shot_maker
-  }
+  # x <- dplyr::mutate(x, "ast" = NA, "shot" = NA)
+  # for(i in 1:nrow(x)) {
+  #   play <- splitplay(x$description[i])
+  #   x$ast[i] <- play$assister
+  #   x$shot[i] <- play$shot_maker
+  # }
+  
+  x$shot <- regmatches(x$description, 
+                       regexpr(".*(?=\\smade)", x$description, perl = TRUE))
+  
+  x$ast <- regmatches(x$description, 
+                      regexpr("(?<=by\\s).*(?=\\.)", x$description, perl = TRUE))
   
   ### Get only shots made by the team in question
   x$ast <- gsub("Jr.", "Jr", x$ast)
   x$shot <- gsub("Jr.", "Jr", x$shot)
   x <- x[is.element(x$ast, roster$name), ]
   
-  sets <- 2 * choose(nrow(roster), 2)
-  network <- data.frame("ast" = rep(NA, sets),
-                        "shot" = rep(NA, sets),
-                        "num" = rep(NA, sets))
+  # sets <- 2 * choose(nrow(roster), 2)
+  # network <- data.frame("ast" = rep(NA, sets),
+  #                       "shot" = rep(NA, sets),
+  #                       "num" = rep(NA, sets))
   
   ### Adjust Three Point Weights in Network
   x$weights <- 1
@@ -113,16 +121,20 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   }
   
   ### Aggregate Assists
-  for(i in 1:nrow(roster)) {
-    ast <- roster$name[i]
-    tmp <- roster[roster$name != ast,]
-    for(j in 1:nrow(tmp)) {
-      index <- j + (i - 1) * nrow(tmp)
-      network$ast[index] <- ast
-      network$shot[index] <- tmp$name[j]
-      network$num[index] <- sum(x$weights[x$ast == ast & x$shot == tmp$name[j]])
-    }
-  }
+  # for(i in 1:nrow(roster)) {
+  #   ast <- roster$name[i]
+  #   tmp <- roster[roster$name != ast,]
+  #   for(j in 1:nrow(tmp)) {
+  #     index <- j + (i - 1) * nrow(tmp)
+  #     network$ast[index] <- ast
+  #     network$shot[index] <- tmp$name[j]
+  #     network$num[index] <- sum(x$weights[x$ast == ast & x$shot == tmp$name[j]])
+  #   }
+  # }
+  
+  network <- x %>% 
+    group_by(ast, shot) %>% 
+    summarize(num = sum(weights))
   
   network$a_freq <- network$num/sum(network$num)
   network <- dplyr::filter(network, a_freq > 0)
