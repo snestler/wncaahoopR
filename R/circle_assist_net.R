@@ -76,6 +76,8 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   ast <- grep("Assisted", pbp_data$description)
   x <- pbp_data[ast, ]
   
+  x <- x[x$whichScored == team, ]
+  
   ### Get Ast/Shot from ESPN Play Description
   # splitplay <- function(description) {
   #   tmp <- strsplit(strsplit(description, "Assisted")[[1]], " ")

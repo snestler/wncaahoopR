@@ -76,7 +76,10 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   # roster$name <- gsub("Jr.", "Jr", roster$name)
   games <- unique(pbp_data$game_id)
   ast <- grep("Assisted", pbp_data$description)
+
   x <- pbp_data[ast, ]
+  
+  x <- x[x$whichScored == team, ]
   
   ### Get Ast/Shot from ESPN Play Description
   # splitplay <- function(description) {

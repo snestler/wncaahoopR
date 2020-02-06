@@ -46,7 +46,6 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
   }
 
   ### Get Data
-  pbp_data
   if(is.null(pbp_data)) {
     warning("PBP Data Not Available for Game Flow Chart")
     return(NULL)
@@ -116,11 +115,12 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
                    panel.grid.major = element_line(size = .1))+
     ggplot2::scale_x_continuous(breaks = seq(0, msec/60, 5)) +
     ggplot2::scale_color_manual(values = c(away_col, home_col),
-                                labels = c(away_team, home_team)) +
-    ggplot2::annotation_custom(grobTree(t1, t2, t3), xmin = 0, ymin = Inf)
-  # +ggplot2::annotate("text", x = 10, y = max_score - 10, label = avg_sd)
+                                labels = c(away_team, home_team)) 
   
   g <- ggplot_gtable(ggplot_build(p))
+  
+  g$grobs[[16]] <- grobTree(t1, t2, t3)
+  
   g$layout$clip[g$layout$name == "panel"] <- "off"
   
   plot.new()

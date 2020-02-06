@@ -14,6 +14,8 @@ circle_assist_net(.data, team, highlight_player, highligh_color)
 \item{highlight_player}{Name of player to highlight in assist network. `NA` yields full team assist
 network with no player highlighting. Default = `NA`.}
 
+\item{highlight_color}{Color of player links to be highlighted. `NA` if ```highlight_player``` is `NA`.}
+
 \item{three_weights}{Logical indicating whether to give extra weight for assisted three point shots.
 If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weight 1). Default = `TRUE`.}
 
@@ -22,8 +24,6 @@ If TRUE, assisted three-point shots will be given weight 1.5 (as opposed to weig
 \item{message}{User supplied plot title to overwrite default plot title, if desired. Default = `NA`.}
 
 \item{listing}{Allows disabling the return of list of network statistics}
-
-\item{highlight_color}{Color of player links to be highlighted. `NA` if ```highlight_player``` is `NA`.}
 }
 \value{
 List with network statistics

@@ -207,6 +207,10 @@ w_get_pbp_game <- function(game_ids) {
       dplyr::rename("secs_remaining_absolute" = secs_remaining,
                     "secs_remaining" = secs_remaining_relative)
     
+    pbp$whichScored <- ifelse(pbp$home_score > lag(pbp$home_score), unique(pbp$home), 
+                              ifelse(pbp$away_score > lag(pbp$away_score), 
+                                     unique(pbp$away), ""))
+    
     if(!exists("pbp_all")) {
       pbp_all <- pbp
     }
@@ -221,6 +225,7 @@ w_get_pbp_game <- function(game_ids) {
     return(pbp_all)
   }, 
   error = function(e) {
+    message(paste("No data available for", game_ids))
     return(paste("No data available for", game_ids))
   })
 }
