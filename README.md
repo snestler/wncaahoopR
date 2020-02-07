@@ -1,8 +1,7 @@
 # wncaahoopR <img src="figures/wncaahoopR_hexsticker.png" align="right" />
 `wncaahoopR` is an R package for working with women's NCAA Basketball play-by-play (and other) data.
 
-This package relies heavily on the work done by Luke Benz (lbenz430) in his package
-`ncaahoopR`, designed for working with men's NCAA basketball play-by-play data.
+This package relies heavily on the work done by Luke Benz (lbenz430) in his package `ncaahoopR`, designed for working with men's NCAA basketball play-by-play data.
 
 `wncaahoopR` also scrapes data from ESPN, but differs in that it does not have scraping provided in multiple functions, choosing to only scan in the data once and then makes use of that `pbp` object within R to produce win-probability and game flow charts, as well as assist networks.
 
@@ -152,14 +151,14 @@ These datasets can be loaded by typing ```data("ids")```, `data("ncaa_colors")`,
 ```game_flow(ND_Mich, away_col = "#C99700")```
 
 #### Single-Game Assist Network
-![Assist Single](figures/assist_net_NotreDame.png)
+![Assist Single](figures/assist_net_ND.png)
 ```assist_net(ND_Mich, team = "Notre Dame")```
 
 #### Circle Assist Networks
-![Oregon](figures/circle_assist_net_NotreDame.png)
+![Oregon](figures/circle_assist_net_ND.png)
 ```circle_assist_net(ND_Mich, team = "Notre Dame")```
 
-![Brunelle Highlight](figures/circle_assist_net_NotreDame_Brunelle.png)
+![Brunelle Highlight](figures/circle_assist_net_ND_Brunelle.png)
 ```circle_assist_net(ND_Mich, team = "Notre Dame", highlight_player = "Sam Brunelle", highlight_color = "#C99700")```
 
 ## Glossary
