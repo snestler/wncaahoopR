@@ -61,14 +61,14 @@
 #'
 "ncaa_colors"
 
-#' A data frame with NCAA court dimensions.
+#' A data frame with women's NCAA court dimensions.
 #'
 #' @docType data
-#' @format A data frame with NCAA court dimensions
+#' @format A data frame with women's NCAA court dimensions
 #'
 #' @details use this dataframe with geom_polygon to draw a NCAA court.
 #'
 #' @examples
-#' data(court)
+#' data(wcourt)
 #'
-"court"
+"wcourt"
