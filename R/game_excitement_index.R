@@ -3,10 +3,12 @@
 #' @description Computes Game Excitement Index for Desired Game
 #' @usage game_excitement_index(pbp_data)
 #'
-#' @param pbp_data Play-by-play data returned from w_get_pbp_game
+#' @param .data play-by-play data frame returned from w_get_pbp_game function
 #' @return GEI--Game Exictement Index
 #' @export
-game_excitement_index <- function(pbp_data) {
+game_excitement_index <- function(.data) {
+
+  pbp_data <- .data
   ### Error Testing
   if(is.null(pbp_data)) {
     stop("pbp_data is missing with no default")

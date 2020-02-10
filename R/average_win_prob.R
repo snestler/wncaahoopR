@@ -3,10 +3,12 @@
 #' @description This function returns the average win probability for the home team.
 #' @usage average_win_prob(pbp_data)
 #' 
-#' @param pbp_data Play-by-play data returned from w_get_pbp_game
+#' @param .data play-by-play data frame returned from w_get_pbp_game function
 #' @return Average Win Probability
 #' @export
-average_win_prob <- function(pbp_data) {
+average_win_prob <- function(.data) {
+
+  pbp_data <- .data
   ### Error Testing
   if(is.null(pbp_data)) {
     stop("pbp_data is missing with no default")

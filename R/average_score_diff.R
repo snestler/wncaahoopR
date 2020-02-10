@@ -3,10 +3,12 @@
 #' @description Returns a single value for the average score differential from home team's perspective.
 #' @usage average_score_diff(pbp_data)
 #' 
-#' @param pbp_data Play-by-play data returned from w_get_pbp_game
+#' @param .data play-by-play data frame returned from w_get_pbp_game function
 #' @return Average score differential
 #' @export
-average_score_diff <- function(pbp_data) {
+average_score_diff <- function(.data) {
+  
+  pbp_data <- .data
   ### Error Testing
   if(is.null(pbp_data)) {
     stop("game_id is missing with no default")

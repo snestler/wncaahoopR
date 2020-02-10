@@ -2,6 +2,7 @@
 #'
 #' @description This function produces an assist network visualization for a team for a single game (or collection of games).
 #' @usage circle_assist_net(.data, team, highlight_player, highligh_color)
+#'
 #' @param .data play-by-play data frame returned from w_get_pbp_game function 
 #' @param team Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name.
 #' @param highlight_player Name of player to highlight in assist network. `NA` yields full team assist

@@ -20,10 +20,9 @@
 #' @importFrom ggplot2 element_line
 #' @export
 game_flow <- function(.data, home_col = NULL, away_col = NULL) {
-  ### Error Testing
-  
+
   pbp_data <- .data
-  
+  ### Error Testing
   if(is.null(pbp_data)) {
     stop("game_id is missing with no default")
   }
