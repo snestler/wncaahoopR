@@ -1,7 +1,7 @@
 # wncaahoopR <img src="figures/wncaahoopR_hexsticker.png" align="right" />
 `wncaahoopR` is an R package for working with women's NCAA Basketball play-by-play (and other) data.
 
-This package relies heavily on the work done by Luke Benz (lbenz430) in his package `ncaahoopR`, designed for working with men's NCAA basketball play-by-play data.
+This package relies heavily on the work done by Luke Benz (lbenz730) in his package `ncaahoopR`, designed for working with men's NCAA basketball play-by-play data.
 
 `wncaahoopR` also scrapes data from ESPN, but differs in that it does not have scraping provided in multiple functions, choosing to only scan in the data once and then makes use of that `pbp` object within R to produce win-probability and game flow charts, as well as assist networks.
 
