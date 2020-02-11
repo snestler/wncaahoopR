@@ -10,13 +10,15 @@
 #' @export
 ### Impute Line for Games
 
-pbp_data <- .data
-### Error Testing
-if(is.null(pbp_data)) {
-  stop("pbp_data is missing with no default")
-}
 
-get_line <- function(pbp_data) {
+get_line <- function(.data) {
+
+  pbp_data <- .data
+  ### Error Testing
+  if(is.null(pbp_data)) {
+    stop("pbp_data is missing with no default")
+  }
+  
   game_date <- pbp_data$date[1]
   away <- pbp_data$away[1]
   home <- pbp_data$home[1]
