@@ -7,7 +7,7 @@
 average_win_prob(pbp_data)
 }
 \arguments{
-\item{pbp_data}{Play-by-play data returned from w_get_pbp_game}
+\item{.data}{play-by-play data frame returned from w_get_pbp_game function}
 }
 \value{
 Average Win Probability

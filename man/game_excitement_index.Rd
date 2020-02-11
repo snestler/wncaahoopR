@@ -7,7 +7,7 @@
 game_excitement_index(pbp_data)
 }
 \arguments{
-\item{pbp_data}{Play-by-play data returned from w_get_pbp_game}
+\item{.data}{play-by-play data frame returned from w_get_pbp_game function}
 }
 \value{
 GEI--Game Exictement Index

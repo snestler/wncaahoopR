@@ -136,7 +136,7 @@ game_shot_chart <- function(game_id, heatmap = F){
                                                    shape = outcome,
                                                    color = team_name),
                                                  size = 3) +
-                             ggplot2::geom_polygon(data = court, aes(x = x, y = y, group = group), col = "gray") +
+                             ggplot2::geom_polygon(data = wcourt, aes(x = x, y = y, group = group), col = "gray") +
                              ggplot2::geom_point(alpha = 0.2, size = 1.5) +
                              ggplot2::scale_color_manual(values = color) +
                              ggplot2::xlab("") +
@@ -185,7 +185,7 @@ team_shot_chart <- function(game_ids, team, heatmap = F) {
   df <- get_shot_locs(game_ids)
 
   if(!is.null(df)) {
-    side_one <- court %>% filter(side == 1)
+    side_one <- wcourt %>% filter(side == 1)
     team_shots <- df %>% filter(team_name %in% c(team, dict$ESPN_PBP[dict$ESPN == team]))
 
     ### flip shots if they are on the wrong side
@@ -279,7 +279,7 @@ opp_shot_chart <- function(game_ids, team, heatmap = F) {
   df <- get_shot_locs(game_ids)
 
   if(!is.null(df)) {
-    side_one <- court %>% filter(side == 1)
+    side_one <- wcourt %>% filter(side == 1)
     team_shots <- df %>% filter(!team_name %in% c(team, dict$ESPN_PBP[dict$ESPN == team]))
 
     ### flip shots if they are on the wrong side
