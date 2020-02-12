@@ -31,7 +31,10 @@ The `team` parameter in the above functions must be a valid team name from the `
 
 __Win Probability Charts__
 
-There is a function (```wp_chart```) for plotting win probability charts, using the ```ggplot2``` library. NOTE: This is equivalent to the  (```gg_wp_chart```) function in ncaahoopR package.  We did not see the need to maintain a base R graphics function.  NOTE:  For now, all win probability charts are "naive," in that they do not incorporate a pre-game line or spread, until we determine a reliable and freely available source (since this is not provided on ESPN, like for the mens game).
+There is a function (```wp_chart```) for plotting win probability charts, using the ```ggplot2``` library. NOTE: This is equivalent to the  (```gg_wp_chart```) function in ncaahoopR package.  We did not see the need to maintain a base R graphics function.  
+
+1. _NOTE 1:  For now, all win probability charts are "naive," in that they do not incorporate a pre-game line or spread, until we determine a reliable and freely available source (since this is not provided on ESPN, like for the mens game)._  
+2. _NOTE 2:  For now, the WP calculations are based on historical data from NCAA MBB games; this will be updated in a future release._
 
 ```wp_chart(pbp, home_col, away_col, show_legend = T)```
 
@@ -74,7 +77,7 @@ __Traditional Assist Networks__
 
 ```assist_net(pbp, team, node_col, three_weights, threshold, message = NA, listing = T)```
 
-* ```team``` is the ESPN team name, as listed in the `ids` data frame.
+* ```team``` is the ESPN team name, as listed in the `ids` data frame.  Or can be 'home' or 'away' (without quotes).
 * ```season```: Options include "2018-19" (for entire season), or a vector of ESPN game IDs. 
 * ```node_col``` is the node color for the graph.
 * ```three_weights``` (default = ```TRUE```): Logical. If TRUE, assisted three-point shots are given 1.5 weight. If FALSE, assisted three-point shots are given weight 1. In both cases, assisted two-point shots are given weight 1. 
@@ -86,7 +89,7 @@ __Circle Assist Networks and Player Highlighting__
 
 ```circle_assist_net(pbp, team, season, highlight_player, highlight_color, three_weights, message = NA, listing = T)```
 
-* ```team``` is the ESPN team name, as listed in the `ids` data frame.
+* ```team``` is the ESPN team name, as listed in the `ids` data frame.    Or can be 'home' or 'away' (without quotes).
 * ```season```: Options include "2018-19" (for entire season), or a vector of ESPN game IDs. 
 * ```highlight_player```: Name of player to highlight in assist network. `NA` yields full team assist network with no player highlighting. Default = `NA`.
 * ```highlight_color```: Color of player links to be highlighted. `NA` if ```highlight_player``` is `NA`.
