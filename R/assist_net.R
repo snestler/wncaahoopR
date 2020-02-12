@@ -34,7 +34,7 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
     stop("pbp_data is missing with no default")
   }
   
-  if(is.null(team)) {
+  if(is.null(substitute(team)) == TRUE) {
     stop("You need to supply a team (quoted team name, home, or away)")
   }
   
