@@ -4,7 +4,7 @@
 \alias{assist_net}
 \title{Assist Network}
 \usage{
-assist_net(.data)
+assist_net(.data, team, node_col, three_weights, threshold, message, listing)
 }
 \arguments{
 \item{.data}{play-by-play data frame returned from w_get_pbp_game function}

@@ -1,7 +1,7 @@
 #' Circle Assist Network
 #'
 #' @description This function produces an assist network visualization for a team for a single game (or collection of games).
-#' @usage circle_assist_net(.data, team, highlight_player, highligh_color)
+#' @usage circle_assist_net(.data, team, highlight_player, highligh_color, three_weights, threshold, message, listing)
 #'
 #' @param .data play-by-play data frame returned from w_get_pbp_game function 
 #' @param team Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name.
@@ -32,6 +32,10 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   ### Error Testing
   if(is.null(pbp_data)) {
     stop("pbp_data is missing with no default")
+  }
+  
+  if(is.null(team)) {
+    stop("You need to supply a team (quoted team name, home, or away)")
   }
   
   if(is.character(substitute(team)) == FALSE) {
