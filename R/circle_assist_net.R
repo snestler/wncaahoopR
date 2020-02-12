@@ -140,8 +140,8 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   # }
   
   network <- x %>% 
-    group_by(ast, shot) %>% 
-    summarize(num = sum(weights))
+    dplyr::group_by(ast, shot) %>% 
+    dplyr::summarize(num = sum(weights))
   
   network$a_freq <- network$num/sum(network$num)
   network <- dplyr::filter(network, a_freq > 0)
