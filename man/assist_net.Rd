@@ -35,6 +35,8 @@ List with network statistics
  }
  @importFrom dplyr group_by
  @importFrom dplyr summarize
+ @importFrom dplyr lag
+ @importFrom magrittr %>%
 }
 \description{
 This function produces an assist network visualization for a team for a single game (or collection of games).

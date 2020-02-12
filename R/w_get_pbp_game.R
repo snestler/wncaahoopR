@@ -207,8 +207,8 @@ w_get_pbp_game <- function(game_ids) {
       dplyr::rename("secs_remaining_absolute" = secs_remaining,
                     "secs_remaining" = secs_remaining_relative)
     
-    pbp$whichScored <- ifelse(pbp$home_score > lag(pbp$home_score), unique(pbp$home), 
-                              ifelse(pbp$away_score > lag(pbp$away_score), 
+    pbp$whichScored <- ifelse(pbp$home_score > dplyr::lag(pbp$home_score), unique(pbp$home), 
+                              ifelse(pbp$away_score > dplyr::lag(pbp$away_score), 
                                      unique(pbp$away), ""))
     
     if(!exists("pbp_all")) {

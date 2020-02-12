@@ -23,6 +23,8 @@
 #'  }
 #'  @importFrom dplyr group_by
 #'  @importFrom dplyr summarize
+#'  @importFrom dplyr lag
+#'  @importFrom magrittr %>% 
 #' @export
 
 assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE, 
