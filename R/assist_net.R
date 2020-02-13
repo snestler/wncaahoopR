@@ -87,6 +87,8 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   
   x <- x[x$whichScored == team, ]
   
+  x <- na.omit(x)
+  
   x$shot <- regmatches(x$description, 
                        regexpr(".*(?=\\smade\\s)", x$description, perl = TRUE))
   
