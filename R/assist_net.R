@@ -21,10 +21,21 @@
 #'  \item{"ast_freq"} - Player percentage of team's assists
 #'  \item{"shot_freq"} - Player percenatge of scoring on team's assisted baskets
 #'  }
-#'  @importFrom dplyr group_by
-#'  @importFrom dplyr summarize
-#'  @importFrom dplyr lag
-#'  @importFrom magrittr %>% 
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarize
+#' @importFrom dplyr lag
+#' @importFrom igraph authority_score
+#' @importFrom igraph degree
+#' @importFrom igraph E
+#' @importFrom igraph E<-
+#' @importFrom igraph graph.data.frame
+#' @importFrom igraph hub_score
+#' @importFrom igraph layout_in_circle
+#' @importFrom igraph page_rank
+#' @importFrom igraph transitivity
+#' @importFrom igraph V
+#' @importFrom igraph V<-
+#' @importFrom magrittr %>% 
 #' @export
 
 assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE, 
@@ -90,11 +101,11 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   }
   
   network <- x %>% 
-    dplyr::group_by(ast, shot) %>% 
-    dplyr::summarize(num = sum(weights))
+    group_by(ast, shot) %>% 
+    summarize(num = sum(weights))
   
   network$a_freq <- network$num/sum(network$num)
-  network <- dplyr::filter(network, a_freq > 0)
+  network <- filter(network, a_freq > 0)
   player_asts <-
     sapply(unique(unlist(network[, c("ast", "shot")])), function(name) { 
       sum(network$a_freq[network$ast == name | network$shot == name]) 
@@ -105,21 +116,21 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   shot_data <- aggregate(a_freq ~ shot, data = network, sum)
   
   ### Create Temporary Directed Network For Stat Aggregation
-  net <- igraph::graph.data.frame(network, directed = T)
-  deg <- igraph::degree(net, mode = "all")
-  igraph::E(net)$weight <- network$num
+  net <- graph.data.frame(network, directed = T)
+  deg <- degree(net, mode = "all")
+  E(net)$weight <- network$num
   
   ### Compute Clustering Coefficient
-  clust_coeff <- round(igraph::transitivity(net, type = "global"), 3)
+  clust_coeff <- round(transitivity(net, type = "global"), 3)
   
   ### Compute Page Rank
-  pagerank <- sort(igraph::page_rank(net)$vector, decreasing = T)
+  pagerank <- sort(page_rank(net)$vector, decreasing = T)
   
   ### Compute Hub Score
-  hubscores <- sort(igraph::hub_score(net, scale = F)$vector, decreasing = T)
+  hubscores <- sort(hub_score(net, scale = F)$vector, decreasing = T)
   
   ### Compute Authority Scores
-  auth_scores <- sort(igraph::authority_score(net, scale = F)$vector, decreasing = T)
+  auth_scores <- sort(authority_score(net, scale = F)$vector, decreasing = T)
   
   ### Compute Assist Frequency Data
   ast_freq <- ast_data$a_freq
@@ -138,15 +149,15 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
                 "ast_freq" = ast_freq, "shot_freq" = shot_freq))
   }
   keep <- names(player_asts)[player_asts > threshold]
-  network <- dplyr::filter(network, shot %in% keep, ast %in% keep)
+  network <- filter(network, shot %in% keep, ast %in% keep)
   
-  net <- igraph::graph.data.frame(network, directed = T)
-  deg <- igraph::degree(net, mode="all")
-  igraph::E(net)$weight <- network$num
-  igraph::E(net)$arrow.size <- 0.7
-  igraph::E(net)$edge.color <- "white"
-  igraph::E(net)$width <- igraph::E(net)$weight * factor
-  igraph::V(net)$color <- node_col
+  net <- graph.data.frame(network, directed = T)
+  deg <- degree(net, mode="all")
+  E(net)$weight <- network$num
+  E(net)$arrow.size <- 0.7
+  E(net)$edge.color <- "white"
+  E(net)$width <- E(net)$weight * factor
+  V(net)$color <- node_col
   
   labs <- as.character(network$num)
   
@@ -160,7 +171,7 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
   plot(net, vertex.label.color= "black", vertex.label.cex = 1,
        edge.curved = 0.3, edge.label = labs, edge.label.cex = 1.2,
        edge.label.color = "black",
-       layout = igraph::layout_in_circle,
+       layout = layout_in_circle,
        vertex.label.family = "Arial Black")
   
   par(cex = 0.6)

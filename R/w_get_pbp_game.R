@@ -5,15 +5,18 @@
 #'
 #' @param game_ids Vector of ESPN game-IDs
 #' @return A data frame of the Play-by-Play data for desired games.
-#' @importFrom xml2 read_html
+
+#' @importFrom dplyr filter
+#' @importFrom dplyr lag
+#' @importFrom dplyr mutate
+#' @importFrom dplyr rename
+#' @importFrom dplyr select
+#' @importFrom magrittr %>% 
 #' @importFrom rvest html_table
 #' @importFrom rvest html_nodes
 #' @importFrom rvest html_text
-#' @importFrom magrittr %>% 
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
-#' @importFrom dplyr filter
-#' @importFrom dplyr rename
+#' @importFrom stringdist stringdist
+#' @importFrom xml2 read_html
 #' @export
 
 w_get_pbp_game <- function(game_ids) {
@@ -33,8 +36,8 @@ w_get_pbp_game <- function(game_ids) {
   
   out <- tryCatch({
     url <- paste(base_url, game_ids, sep = "")
-    allHTML <- try(xml2::read_html(url))
-    tmp <- rvest::html_table(allHTML, fill = TRUE)
+    allHTML <- try(read_html(url))
+    tmp <- html_table(allHTML, fill = TRUE)
     
     if(length(tmp) == 1) {
       message(paste("Play by Play Data Not Available:", game_ids))
@@ -55,7 +58,7 @@ w_get_pbp_game <- function(game_ids) {
     tmp <- tmp[!is.na(names(tmp))]
     
     pbp <- tmp %>% 
-      dplyr::mutate(play_id = 1:nrow(.),
+      mutate(play_id = 1:nrow(.),
                     time_remaining_period = as.character(time),
                     description = as.character(PLAY),
                     away_score = suppressWarnings(as.numeric(gsub("-.*", "", SCORE))),
@@ -71,7 +74,7 @@ w_get_pbp_game <- function(game_ids) {
       5 * 60 * pmax((OTS * as.numeric(pbp$period <= 4)), ((OTS + 4 - pbp$period) * as.numeric(pbp$period > 4))) + 
       60 * mins + secs
     
-    pbp <- dplyr::select(pbp, play_id, period, time_remaining_period, secs_remaining, description,
+    pbp <- select(pbp, play_id, period, time_remaining_period, secs_remaining, description,
                          home_score, away_score)
     
     pbp[1, c("home_score", "away_score")] <- c(0,0)
@@ -82,14 +85,14 @@ w_get_pbp_game <- function(game_ids) {
     
     ### Get full team names
     url2 <- paste(summary_url, game_ids, sep = "")
-    tmp <- xml2::read_html(url2) %>% 
-      rvest::html_table(fill = TRUE)
+    tmp <- read_html(url2) %>% 
+      html_table(fill = TRUE)
     pbp$away <- as.character(as.data.frame(tmp[[2]])[1,1])
     pbp$home <- as.character(as.data.frame(tmp[[2]])[2,1])
     away_abv <- as.character(as.data.frame(tmp[[1]])[1,1])
     home_abv <- as.character(as.data.frame(tmp[[1]])[2,1])
     
-    ### Get Game Line
+    ### Get Game Line - keeping her in case ESPN ever adds line for WBB
     # y <- scan(url2, what = "", sep = "\n")
     # y <- y[grep("Line:", y)]
     # if(length(y) > 0) {
@@ -135,16 +138,16 @@ w_get_pbp_game <- function(game_ids) {
     # }
     
     ### Time Outs
-    timeout <- dplyr::filter(pbp, grepl("Timeout", description)) %>%
-      dplyr::filter(description != "Official TV Timeout")
+    timeout <- filter(pbp, grepl("Timeout", description)) %>%
+      filter(description != "Official TV Timeout")
     
     timeout$team <- sapply(timeout$description, function(z) gsub("\\s* Timeout", "", z))
     timeout$tmp <- paste(timeout$team, timeout$secs_remaining)
-    timeout <- dplyr::filter(timeout, !duplicated(tmp))
+    timeout <- filter(timeout, !duplicated(tmp))
     teams <- unique(timeout$team)
     pos_teams <- c(pbp$home[1], pbp$away[1])
     if(nrow(timeout) > 0) {
-      home <- pos_teams[which.min(stringdist::stringdist(teams, pbp$home[1]))]
+      home <- pos_teams[which.min(stringdist(teams, pbp$home[1]))]
       away <- setdiff(pos_teams, home)
     }else{
       home <- pos_teams[1]
@@ -197,18 +200,18 @@ w_get_pbp_game <- function(game_ids) {
       pbp$secs_remaining[1:(nrow(pbp)-1)] -
       pbp$secs_remaining[2:nrow(pbp)]
     
-    pbp <- dplyr::select(pbp, -pre_game_prob)
-    pbp <- dplyr::select(pbp, play_id, period, time_remaining_period,
+    pbp <- select(pbp, -pre_game_prob)
+    pbp <- select(pbp, play_id, period, time_remaining_period,
                          secs_remaining_relative, secs_remaining, description,
                          home_score, away_score, score_diff, play_length,
                          win_prob, home, away, home_time_out_remaining,
                          away_time_out_remaining, home_timeout_ind,
                          away_timeout_ind, home_favored_by, game_id, date) %>%
-      dplyr::rename("secs_remaining_absolute" = secs_remaining,
+      rename("secs_remaining_absolute" = secs_remaining,
                     "secs_remaining" = secs_remaining_relative)
     
-    pbp$whichScored <- ifelse(pbp$home_score > dplyr::lag(pbp$home_score), unique(pbp$home), 
-                              ifelse(pbp$away_score > dplyr::lag(pbp$away_score), 
+    pbp$whichScored <- ifelse(pbp$home_score > lag(pbp$home_score), unique(pbp$home), 
+                              ifelse(pbp$away_score > lag(pbp$away_score), 
                                      unique(pbp$away), ""))
     
     if(!exists("pbp_all")) {

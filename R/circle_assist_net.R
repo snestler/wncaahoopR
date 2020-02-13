@@ -22,10 +22,26 @@
 #'  \item{"ast_freq"} - Player percentage of team's assists
 #'  \item{"shot_freq"} - Player percenatge of scoring on team's assisted baskets
 #'  }
-#'  @importFrom dplyr group_by
-#'  @importFrom dplyr summarize
-#'  @importFrom dplyr lag
-#'  @importFrom magrittr %>% 
+#' @importFrom circlize CELL_META
+#' @importFrom circlize chordDiagram
+#' @importFrom circlize circos.axis
+#' @importFrom circlize circos.text
+#' @importFrom circlize circos.track
+#' @importFrom circlize get.all.sector.index
+#' @importFrom dplyr arrange
+#' @importFrom dplyr group_by
+#' @importFrom dplyr pull
+#' @importFrom dplyr rename
+#' @importFrom dplyr summarise
+#' @importFrom dplyr lag
+#' @importFrom igraph authority_score
+#' @importFrom igraph degree
+#' @importFrom igraph E
+#' @importFrom igraph graph.data.frame
+#' @importFrom igraph hub_score
+#' @importFrom igraph page_rank
+#' @importFrom igraph transitivity
+#' @importFrom magrittr %>% 
 #' @export
 circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = NA, 
                               highlight_color = NA, three_weights = TRUE, 
@@ -88,11 +104,11 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   }
   
   network <- x %>% 
-    dplyr::group_by(ast, shot) %>% 
-    dplyr::summarize(num = sum(weights))
+    group_by(ast, shot) %>% 
+    summarize(num = sum(weights))
   
   network$a_freq <- network$num/sum(network$num)
-  network <- dplyr::filter(network, a_freq > 0)
+  network <- filter(network, a_freq > 0)
   player_asts <-
     sapply(unique(unlist(network[, c("ast", "shot")])), function(name) { 
       sum(network$a_freq[network$ast == name | network$shot == name]) 
@@ -103,21 +119,21 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   shot_data <- aggregate(a_freq ~ shot, data = network, sum)
   
   ### Create Temporary Directed Network For Stat Aggregation
-  net <- igraph::graph.data.frame(network, directed = T)
-  deg <- igraph::degree(net, mode = "all")
-  igraph::E(net)$weight <- network$num
+  net <- graph.data.frame(network, directed = T)
+  deg <- degree(net, mode = "all")
+  E(net)$weight <- network$num
   
   ### Compute Clustering Coefficient
-  clust_coeff <- round(igraph::transitivity(net, type = "global"), 3)
+  clust_coeff <- round(transitivity(net, type = "global"), 3)
   
   ### Compute Page Rank
-  pagerank <- sort(igraph::page_rank(net)$vector, decreasing = T)
+  pagerank <- sort(page_rank(net)$vector, decreasing = T)
   
   ### Compute Hub Score
-  hubscores <- sort(igraph::hub_score(net, scale = F)$vector, decreasing = T)
+  hubscores <- sort(hub_score(net, scale = F)$vector, decreasing = T)
   
   ### Compute Authority Scores
-  auth_scores <- sort(igraph::authority_score(net, scale = F)$vector, decreasing = T)
+  auth_scores <- sort(authority_score(net, scale = F)$vector, decreasing = T)
   
   ### Compute Assist Frequency Data
   ast_freq <- ast_data$a_freq
@@ -136,7 +152,7 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
                 "ast_freq" = ast_freq, "shot_freq" = shot_freq))
   }
   keep <- names(player_asts)[player_asts > threshold]
-  network <- dplyr::filter(network, shot %in% keep, ast %in% keep)
+  network <- filter(network, shot %in% keep, ast %in% keep)
   
   
   
@@ -150,21 +166,21 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
     plot_title <- paste(plot_title, format(as.Date(x$date[1]), "%B %d, %Y"), sep = "\n")
   }
   
-  players <- dplyr::group_by(network, ast) %>%
-    dplyr::summarise("count" = sum(num)) %>%
-    dplyr::rename("player" = ast) %>%
+  players <- group_by(network, ast) %>%
+    summarise("count" = sum(num)) %>%
+    rename("player" = ast) %>%
     rbind(
-      dplyr::group_by(network, shot) %>%
-        dplyr::summarise("count" = sum(num)) %>%
-        dplyr::rename("player" = shot)
+      group_by(network, shot) %>%
+        summarise("count" = sum(num)) %>%
+        rename("player" = shot)
     ) %>%
-    dplyr::group_by(player) %>%
-    dplyr::summarise("count" = sum(count)) %>%
-    dplyr::arrange(desc(count)) %>%
-    dplyr::pull(player)
+    group_by(player) %>%
+    summarise("count" = sum(count)) %>%
+    arrange(desc(count)) %>%
+    pull(player)
   
   if(is.na(highlight_player)) {
-    circlize::chordDiagram(network[,-4], order = players,
+    chordDiagram(network[,-4], order = players,
                            grid.col = gg_color_hue(length(players)),
                            annotationTrack = "grid",
                            preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(network))))))
@@ -179,7 +195,7 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
     borders <- filter(network, ast == highlight_player) %>%
       select(ast, shot) %>%
       mutate(graphical = 1)
-    circlize::chordDiagram(network[,-4], order = players,
+    chordDiagram(network[,-4], order = players,
                            grid.col = cols,
                            link.lwd = 2,
                            link.border = borders,
@@ -187,12 +203,12 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
                            preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(network))))))
   }
   
-  for(si in circlize::get.all.sector.index()) {
-    circlize::circos.axis(h = "top", labels.cex = 0.3, sector.index = si, track.index = 2)
+  for(si in get.all.sector.index()) {
+    circos.axis(h = "top", labels.cex = 0.3, sector.index = si, track.index = 2)
   }
   par(cex = 0.6)
-  circlize::circos.track(track.index = 1, panel.fun = function(x, y) {
-    circlize::circos.text(circlize::CELL_META$xcenter, circlize::CELL_META$ylim[1], circlize::CELL_META$sector.index,
+  circos.track(track.index = 1, panel.fun = function(x, y) {
+    circos.text(CELL_META$xcenter, CELL_META$ylim[1], CELL_META$sector.index,
                           facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
   }, bg.border = NA)
   par(cex = 1)

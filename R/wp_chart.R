@@ -19,7 +19,20 @@
 #' w_get_pbp_game("401176897") %>% 
 #'     gg_wp_chart()
 #' 
-#' @importFrom magrittr %>% 
+#' @importFrom dplyr lead
+#' @importFrom dplyr mutate
+#' @importFrom dplyr select
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 annotate
+#' @importFrom ggplot2 geom_line
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 scale_color_manual
+#' @importFrom ggplot2 scale_x_continuous
+#' @importFrom ggplot2 scale_y_continuous
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 theme_minimal
+#' @importFrom magrittr %>%
 #' @export
 wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
   
@@ -62,17 +75,17 @@ wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
   
   ### Get in to Appropropriate Format
   x <- rbind(
-    dplyr::select(pbp_data, secs_remaining_absolute, win_prob) %>%
-      dplyr::mutate(team = "home"),
-    dplyr::select(pbp_data, secs_remaining_absolute, win_prob) %>%
-      dplyr::mutate("win_prob" = 1 - win_prob,
+    select(pbp_data, secs_remaining_absolute, win_prob) %>%
+      mutate(team = "home"),
+    select(pbp_data, secs_remaining_absolute, win_prob) %>%
+      mutate("win_prob" = 1 - win_prob,
                     team = "away")
   ) %>%
-    dplyr::mutate("secs_elapsed" = max(secs_remaining_absolute) - secs_remaining_absolute)
+    mutate("secs_elapsed" = max(secs_remaining_absolute) - secs_remaining_absolute)
   
   ### Game Excitemant Index
   pbp_data$wp_delta <- 0
-  pbp_data$wp_delta <- abs(pbp_data$win_prob - dplyr::lead(pbp_data$win_prob))
+  pbp_data$wp_delta <- abs(pbp_data$win_prob - lead(pbp_data$win_prob))
   gei <- sum(pbp_data$wp_delta, na.rm = TRUE) * 2400/msec
   gei <- paste("Game Excitement Index:", round(gei, 2))
   
@@ -90,15 +103,15 @@ wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
   }
   
   ### Make Plot
-  p <- ggplot2::ggplot(x, ggplot2::aes(x = secs_elapsed/60, y = win_prob, group = team, col = team)) +
-    ggplot2::geom_line(size = 1) +
-    ggplot2::theme_minimal() +
-    ggplot2::labs(x = "Minutes Elapsed",
+  p <- ggplot(x, aes(x = secs_elapsed/60, y = win_prob, group = team, col = team)) +
+    geom_line(size = 1) +
+    theme_minimal() +
+    labs(x = "Minutes Elapsed",
                   y = element_blank(),
                   col = element_blank(),
                   title = paste("Win Probability Chart for", home_team, "vs.", away_team),
                   subtitle = date) +
-    ggplot2::theme(plot.title = element_text(size = 16),
+    theme(plot.title = element_text(size = 16),
                    plot.subtitle = element_text(size = 12),
                    axis.title = element_text(size = 14),
                    legend.position = "top", 
@@ -106,14 +119,14 @@ wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
                    panel.grid.minor.y = element_blank(), 
                    panel.grid.minor.x = element_blank(),
                    panel.grid.major = element_line(size = .1)) +
-    ggplot2::scale_x_continuous(breaks = seq(0, msec/60, 5)) +
-    ggplot2::scale_y_continuous(labels = function(x) {paste(100 * x, "%", sep = "")}) +
-    ggplot2::scale_color_manual(values = c(away_col, home_col),
+    scale_x_continuous(breaks = seq(0, msec/60, 5)) +
+    scale_y_continuous(labels = function(x) {paste(100 * x, "%", sep = "")}) +
+    scale_color_manual(values = c(away_col, home_col),
                                 labels = c(away_team, home_team))
   if(show_gei) {
     p <- p +
-      ggplot2::annotate("text", x = 5, y = 0.05, label = gei) +
-      ggplot2::annotate("text", x = 5, y = 0.025, label = min_prob)
+      annotate("text", x = 5, y = 0.05, label = gei) +
+      annotate("text", x = 5, y = 0.025, label = min_prob)
   }
   
   p

@@ -14,10 +14,22 @@
 #' @examples
 #' pbp_data <- w_get_pbp_game("401176897")
 #' game_flow(pbp_data, "red", "black")
+#' @importFrom dplyr mutate
+#' @importFrom dplyr select
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 element_text
 #' @importFrom ggplot2 element_blank
 #' @importFrom ggplot2 element_line
+#' @importFrom ggplot2 geom_step
+#' @importFrom ggplot2 geom_vline
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 scale_color_manual
+#' @importFrom ggplot2 scale_x_continuous
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 theme_minimal
+#' @importFrom grid grid.draw
+#' @importFrom grid textGrob
 #' @export
 game_flow <- function(.data, home_col = NULL, away_col = NULL) {
 
@@ -64,15 +76,15 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
 
   ### Get in to Appropropriate Format
   x <- rbind(
-    dplyr::select(pbp_data, secs_remaining_absolute, home_score) %>%
-      dplyr::mutate("score" = home_score, team = "home") %>%
-      dplyr::select(-home_score),
-    dplyr::select(pbp_data, secs_remaining_absolute, away_score) %>%
-      dplyr::mutate("score" = away_score,
+    select(pbp_data, secs_remaining_absolute, home_score) %>%
+      mutate("score" = home_score, team = "home") %>%
+      select(-home_score),
+    select(pbp_data, secs_remaining_absolute, away_score) %>%
+      mutate("score" = away_score,
                     "team" = "away") %>%
-      dplyr::select(-away_score)
+      select(-away_score)
   ) %>%
-    dplyr::mutate("secs_elapsed" = max(secs_remaining_absolute) - secs_remaining_absolute)
+    mutate("secs_elapsed" = max(secs_remaining_absolute) - secs_remaining_absolute)
 
 
   ### Message
@@ -86,25 +98,24 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
   ### Make Plot
   library(grid)
   library(ggplot2)
-  t1 <- grid::textGrob(expr("Game Flow for " * phantom(!!home_team) * " vs " * phantom(!!away_team)),
+  t1 <- textGrob(expr("Game Flow for " * phantom(!!home_team) * " vs " * phantom(!!away_team)),
                        just = "top", x = .25, y = 1.1, gp = gpar(col = "black", fontsize = 16))
   
-  t2 <- grid::textGrob(expr(phantom("Game Flow for ") * !!home_team * phantom(" vs ") * phantom(!!away_team)),
+  t2 <- textGrob(expr(phantom("Game Flow for ") * !!home_team * phantom(" vs ") * phantom(!!away_team)),
                        just = "top", x = .25, y = 1.1, gp = gpar(col = home_col, fontsize = 16))
   
-  t3 <- grid::textGrob(expr(phantom("Game Flow for ") * phantom(!!home_team) * phantom(" vs ") * !!away_team),
+  t3 <- textGrob(expr(phantom("Game Flow for ") * phantom(!!home_team) * phantom(" vs ") * !!away_team),
                        just = "top", x = .25, y = 1.1, gp = gpar(col = away_col, fontsize = 16))
   
-  p <- ggplot2::ggplot(x, aes(x = secs_elapsed/60, y = score, group = team, color = team)) +
-    ggplot2::geom_step(size = 1) +
-    ggplot2::theme_minimal() +
-    # ggplot2::geom_vline(xintercept = plot_lines/60, lty = 2, alpha = 0.5, size = 0.8) +
-    ggplot2::labs(x = "Minutes Elapsed",
+  p <- ggplot(x, aes(x = secs_elapsed/60, y = score, group = team, color = team)) +
+    geom_step(size = 1) +
+    theme_minimal() +
+    labs(x = "Minutes Elapsed",
                   y = "Score",
                   col = element_blank(),
                   title = "",
                   subtitle = paste(date, avg_sd, sep = "\n")) +
-    ggplot2::theme(plot.title = element_text(size = 16),
+    theme(plot.title = element_text(size = 16),
                    plot.subtitle = element_text(size = 12),
                    axis.title = element_text(size = 14),
                    legend.position = "none", 
@@ -112,8 +123,8 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
                    panel.grid.minor.y = element_blank(), 
                    panel.grid.minor.x = element_blank(),
                    panel.grid.major = element_line(size = .1))+
-    ggplot2::scale_x_continuous(breaks = seq(0, msec/60, 5)) +
-    ggplot2::scale_color_manual(values = c(away_col, home_col),
+    scale_x_continuous(breaks = seq(0, msec/60, 5)) +
+    scale_color_manual(values = c(away_col, home_col),
                                 labels = c(away_team, home_team)) 
   
   g <- ggplot_gtable(ggplot_build(p))
@@ -123,5 +134,5 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
   g$layout$clip[g$layout$name == "panel"] <- "off"
   
   plot.new()
-  grid::grid.draw(g, recording = FALSE)
+  grid.draw(g, recording = FALSE)
 }
