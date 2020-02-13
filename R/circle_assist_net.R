@@ -56,10 +56,6 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   text_team <- dict$ESPN_PBP[dict$ESPN == team]
   text_team <- text_team[!is.na(text_team)]
   
-  ### Warnings
-  # if(!"ncaahoopR" %in% .packages()) {
-  #   ids <- create_ids_df()
-  # }
   if(!team %in% ids$team) {
     warning("Invalid team. Please consult the ids data frame for a list of valid teams, using data(ids).")
     return(NULL)
@@ -72,72 +68,24 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   
   factor <- 1.25
   
-  ### Get Roster
-  # roster <- try(w_get_roster(team))
-  # if(class(roster) == "try-error") {
-  #   warning("Unable to get roster. ESPN is updating CBB files. Check back again soon")
-  #   return(NULL)
-  # }
-  # roster$name <- gsub("Jr.", "Jr", roster$name)
   games <- unique(pbp_data$game_id)
   ast <- grep("Assisted", pbp_data$description)
   x <- pbp_data[ast, ]
   
   x <- x[x$whichScored == team, ]
   
-  ### Get Ast/Shot from ESPN Play Description
-  # splitplay <- function(description) {
-  #   tmp <- strsplit(strsplit(description, "Assisted")[[1]], " ")
-  #   n1 <- grep("made", tmp[[1]])
-  #   n1 <- n1[length(n1)]
-  #   n2 <- length(tmp[[2]])
-  #   tmp[[2]][n2] <- substring(tmp[[2]][n2], 1, nchar(tmp[[2]][n2]) - 1)
-  #   shot_maker <- paste(tmp[[1]][1:(n1-1)], collapse = " ")
-  #   assister <- paste(tmp[[2]][3:n2], collapse = " ")
-  #   return(list("shot_maker" = shot_maker, "assister" = assister))
-  # }
-  # 
-  # x <- dplyr::mutate(x, "ast" = NA, "shot" = NA)
-  # for(i in 1:nrow(x)) {
-  #   play <- splitplay(x$description[i])
-  #   x$ast[i] <- play$assister
-  #   x$shot[i] <- play$shot_maker
-  # }
-  
   x$shot <- regmatches(x$description, 
                        regexpr(".*(?=\\smade\\s)", x$description, perl = TRUE))
   
   x$ast <- regmatches(x$description, 
                       regexpr("(?<=\\sby\\s).*(?=\\.)", x$description, perl = TRUE))
-  
-  ### Get only shots made by the team in question
-  # x$ast <- gsub("Jr.", "Jr", x$ast)
-  # x$shot <- gsub("Jr.", "Jr", x$shot)
-  # x <- x[is.element(x$ast, roster$name), ]
-  
-  # sets <- 2 * choose(nrow(roster), 2)
-  # network <- data.frame("ast" = rep(NA, sets),
-  #                       "shot" = rep(NA, sets),
-  #                       "num" = rep(NA, sets))
-  
+
   ### Adjust Three Point Weights in Network
   x$weights <- 1
   if(three_weights){
     threes <- grep("Three Point", x$description)
     x$weights[threes] <- 1.5
   }
-  
-  ### Aggregate Assists
-  # for(i in 1:nrow(roster)) {
-  #   ast <- roster$name[i]
-  #   tmp <- roster[roster$name != ast,]
-  #   for(j in 1:nrow(tmp)) {
-  #     index <- j + (i - 1) * nrow(tmp)
-  #     network$ast[index] <- ast
-  #     network$shot[index] <- tmp$name[j]
-  #     network$num[index] <- sum(x$weights[x$ast == ast & x$shot == tmp$name[j]])
-  #   }
-  # }
   
   network <- x %>% 
     dplyr::group_by(ast, shot) %>% 
