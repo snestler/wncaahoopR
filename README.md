@@ -182,8 +182,9 @@ Play-by-Play files contain the following variables:
 * ```away```: Name of the away team.
 * ```home_timeout_remaining```: Number of timeouts remaining for the home team.
 * ```away_timeout_remaining```: Number of timeouts remaining for the away team.
-* ```home_timeout_ind```: ???????????????????????????????????????????????????????
-* ```away_timeout_ind```: ???????????????????????????????????????????????????????
+* ```home_timeout_ind```: Binary (0-1) indicator if home team took a timeout in previous 60 seconds.
+* ```away_timeout_ind```: Binary (0-1) indicator if away team took a timeout in previous 60 seconds.
 * ```home_favored_by```: Number of points by which the home team is favored, prior to tip-off. If Vegas point spread is available on ESPN, that is used as the default. When not available, an attempt is made to impute the pre-game point spread from derived team strengths. Imputed point spreads are not available for games prior to the 2016-17 season or when one of the teams is not in Division 1.
 * ```game_id```: ESPN game_id for the game in question.
 * ```date```: Date of game.
+* ```whichScored```: A team name indicating which team scored on a play.
