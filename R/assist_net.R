@@ -85,7 +85,9 @@ assist_net <- function(.data, team, node_col = NULL, three_weights = TRUE,
 
   x <- pbp_data[ast, ]
   
-  x <- x[x$whichScored == team, ]
+  dropVar <- "home_favored_by"
+  
+  x <- x[, -c(which(names(x) %in% dropVar))]
   
   x <- na.omit(x)
   
