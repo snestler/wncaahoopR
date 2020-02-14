@@ -8,7 +8,7 @@
 #' @keywords internal
 
 wp_compute <- function(x) {
-  load("R/sysdata.rda")
+  # load("R/sysdata.rda")
   score_diff_smooth <-
     loess(estimate ~ max_time,
           data = filter(coeffs, coefficient == "score_diff"),

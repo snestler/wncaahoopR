@@ -20,7 +20,7 @@
 #' @export
 
 w_get_pbp_game <- function(game_ids) {
-  load("R/sysdata.rda")
+  # load("R/sysdata.rda")
 
   if(is.null(game_ids)) {
     stop("game_ids is missing with no default")
