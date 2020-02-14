@@ -132,7 +132,7 @@ __Circle Assist Networks and Player Highlighting__
 * `color_6`: Hexcode for team's 6th color, when available.
 
 ![Available Colors](figures/ncaa_colors.png)
-_Primary and secondary colors for all 353 teams._
+_Primary and secondary colors for all 351 teams._
 
 
 These datasets can be loaded by typing ```data("ids")```, `data("ncaa_colors")`, or ```data("dict")```, respectively.
