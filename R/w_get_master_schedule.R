@@ -7,6 +7,12 @@
 #' 
 #' @param date Date for which to get schedule (YYYY-MM-DD)
 #' @return A data-frame of the day's schedule of games
+#' @importFrom dplyr filter
+#' @importFrom dplyr mutate
+#' @importFrom dplyr select
+#' @importFrom rvest html_nodes
+#' @importFrom rvest html_table
+#' @importFrom xml2 read_html
 #' @export
 w_get_master_schedule <- function(date) {
   ### Error Testing
@@ -23,7 +29,8 @@ w_get_master_schedule <- function(date) {
   date_ <- gsub("-", "", as.character(date))
   url <- paste0("https://www.espn.com/womens-college-basketball/schedule/_/date/", date_)
   
-  z <- XML::readHTMLTable(RCurl::getURL(url))
+  allRead <- read_html(url)
+  z <- html_table(allRead)
   if(length(z) > 1) {
     schedule <- as.data.frame(z[[1]])[,c(1,2)]
     completed <- as.data.frame(z[[2]][-1,1:3])
@@ -70,11 +77,8 @@ w_get_master_schedule <- function(date) {
                               "home_score" = NA)
   }
   
-  x <- scan(url, sep = "\n", what = "")
-  x <- x[grep("gameId", x)[1]]
-  x <- gsub("[A-z]", "", x)
-  x <- strsplit(x, "\\?=")[[1]]
-  x <- suppressWarnings(as.numeric(unname(sapply(x, function(y){ substring(y, 1, 9) }))))
+  x <- html_nodes(allRead, "a[href*='game?gameId']") %>% html_attr('href')
+  x <- regmatches(x, regexpr("[0-9]+$", x))
   x <- x[!is.na(x) & !duplicated(x)]
   x <- x[1:(length(x) - n_canceled - n_postponed)]
   
