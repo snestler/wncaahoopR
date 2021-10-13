@@ -4,7 +4,8 @@
 \name{dict}
 \alias{dict}
 \title{A data frame with team names from various college basketball sites}
-\format{A data frame with team names from various college basketball sites
+\format{
+A data frame with team names from various college basketball sites
 \describe{
  \item{NCAA}{the name of the team, as listed on the NCAA website}
  \item{ESPN}{the name of the team, as listed on the ESPN URLs}
@@ -12,7 +13,8 @@
  \item{Warren_Nolan}{the name of the team, as listed on WarrenNolan.com}
  \item{Trank}{the name of the team, as listed on barttorvik.com}
  \item{name_247}{the name of the team, as listed on 247Sports.com}
-}}
+}
+}
 \usage{
 dict
 }

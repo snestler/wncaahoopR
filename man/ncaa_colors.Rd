@@ -4,7 +4,8 @@
 \name{ncaa_colors}
 \alias{ncaa_colors}
 \title{A data frame with team colors}
-\format{A data frame with team colors
+\format{
+A data frame with team colors
 \describe{
  \item{ncaa_name}{the name of the team, as listed on the NCAA website (same as dict$NCAA)}
  \item{espn_name}{the name of the team, as listed on the ESPN URLs (same as dict$ESPN)}
@@ -14,7 +15,8 @@
  \item{color_4}{hexcode for team's 4th color, when available}
  \item{color_5}{hexcode for team's 5th color, when available}
  \item{color_6}{hexcode for team's 6th color, when available}
-}}
+}
+}
 \usage{
 ncaa_colors
 }

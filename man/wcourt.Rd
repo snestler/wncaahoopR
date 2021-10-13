@@ -4,7 +4,9 @@
 \name{wcourt}
 \alias{wcourt}
 \title{A data frame with women's NCAA court dimensions.}
-\format{A data frame with women's NCAA court dimensions}
+\format{
+A data frame with women's NCAA court dimensions
+}
 \usage{
 wcourt
 }

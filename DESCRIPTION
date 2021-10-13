@@ -7,14 +7,16 @@ Authors@R: c(person("Scott", "Nestler", email = "snestler@nd.edu", role = c("aut
 Maintainer: Scott Nestler <snestler@nd.edu>
 Description: `wncaahoopR` is an R package for working with women's NCAA Basketball play-by-play (and other) data, primarily by scraping from ESPN, but in a different way than the `ncaahoopR` package from Luke Benz (lbenz730). This package has a single function for scraping data and then makes use of the resulting `pbp` object within R to produce charts similar to those in `ncaahoopR`.
 Imports:
+    circlize,
     dplyr,
     grid,
     ggplot2,
     igraph,
     magrittr,
     rvest,
+    stringdist,
     xml2
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.2
