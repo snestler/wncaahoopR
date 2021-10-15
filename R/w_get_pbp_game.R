@@ -29,15 +29,15 @@ w_get_pbp_game <- function(game_ids) {
   # testID <- 401176897
   # otID <- 401179779
   # unplayed <- 401178885
-  base_url <- "https://www.espn.com/womens-college-basketball/playbyplay?gameId="
-  summary_url <- "https://www.espn.com/womens-college-basketball/game?gameId="
+  base_url <- "https://www.espn.com/womens-college-basketball/playbyplay/_/gameId/"
+  summary_url <- "https://www.espn.com/womens-college-basketball/game/_/gameId/"
   
   message(paste0("Scraping Data for Game: ", game_ids))
   
   out <- tryCatch({
     url <- paste(base_url, game_ids, sep = "")
     allHTML <- try(read_html(url))
-    tmp <- html_table(allHTML, fill = TRUE)
+    tmp <- html_table(allHTML)
     
     if(length(tmp) == 1) {
       message(paste("Play by Play Data Not Available:", game_ids))
@@ -56,6 +56,8 @@ w_get_pbp_game <- function(game_ids) {
     tmp <- do.call("rbind", tmp)
     
     tmp <- tmp[!is.na(names(tmp))]
+    
+    colnames(tmp)[which(colnames(tmp) == "")] <- "spacer"
     
     pbp <- tmp %>% 
       mutate(play_id = 1:nrow(.),
@@ -77,7 +79,7 @@ w_get_pbp_game <- function(game_ids) {
     pbp <- select(pbp, play_id, period, time_remaining_period, secs_remaining, description,
                          home_score, away_score)
     
-    pbp[1, c("home_score", "away_score")] <- c(0,0)
+    pbp[1, c("home_score", "away_score")] <- list(0, 0)
     
     these <- which(is.na(pbp$home_score))
     
@@ -86,7 +88,7 @@ w_get_pbp_game <- function(game_ids) {
     ### Get full team names
     url2 <- paste(summary_url, game_ids, sep = "")
     tmp <- read_html(url2) %>% 
-      html_table(fill = TRUE)
+      html_table()
     pbp$away <- as.character(as.data.frame(tmp[[2]])[1,1])
     pbp$home <- as.character(as.data.frame(tmp[[2]])[2,1])
     away_abv <- as.character(as.data.frame(tmp[[1]])[1,1])
