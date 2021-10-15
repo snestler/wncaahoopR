@@ -1,7 +1,7 @@
 #' Get Line
 #'
 #' @description Gets the line (in points) of the game from WHERE?
-#' @usage get_line(pbp_data)
+#' @usage get_line(.data)
 #' 
 #' @param .data play-by-play data frame returned from w_get_pbp_game function
 #' @return Line

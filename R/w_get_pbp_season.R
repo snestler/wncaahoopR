@@ -4,7 +4,7 @@
 #' is assumed to be the ESPN team name, which can be looked up in the ids
 #' dataframe.
 #' @description Scrapes ESPN Play-by-Play data for a team's entire season.
-#' @usage w_get_pbp_game(game_ids)
+#' @usage w_get_pbp_season(team)
 #'
 #' @param team Team to get Play-by-Play data for
 #' @return A list containing a data frame for each game. Returns a message if no game data is available.

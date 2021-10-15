@@ -1,7 +1,7 @@
 #' Circle Assist Network
 #'
 #' @description This function produces an assist network visualization for a team for a single game (or collection of games).
-#' @usage circle_assist_net(.data, team, highlight_player, highligh_color, three_weights, threshold, message, listing)
+#' @usage circle_assist_net(.data, team, highlight_player, highlight_color, three_weights, threshold, message, listing)
 #'
 #' @param .data play-by-play data frame returned from w_get_pbp_game function 
 #' @param team Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name.
@@ -167,7 +167,8 @@ circle_assist_net <- function(.data, team, node_col = NULL, highlight_player = N
   text <- " Assist Graph"  
     
   plot_title <-
-    ifelse(is.na(message), paste0(text_team, ifelse(three_weights, " Weighted", ""), text), text)
+    ifelse(is.na(message), paste0(text_team, ifelse(three_weights, " Weighted", ""), 
+                                  text), text)
   if(length(unique(x$game_id)) == 1) {
     plot_title <- paste(plot_title, format(as.Date(x$date[1]), "%B %d, %Y"), sep = "\n")
   }
