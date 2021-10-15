@@ -4,7 +4,7 @@
 \alias{average_win_prob}
 \title{Average Win Probability}
 \usage{
-average_win_prob(pbp_data)
+average_win_prob(.data)
 }
 \arguments{
 \item{.data}{play-by-play data frame returned from w_get_pbp_game function}

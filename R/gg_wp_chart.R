@@ -14,10 +14,7 @@
 #' pbp_data <- w_get_pbp_game("401176897")
 #' gg_wp_chart(pbp_data)
 #' 
-#' # Can also be:
 #' 
-#' w_get_pbp_game("401176897") %>% 
-#'     gg_wp_chart()
 #' 
 #' @importFrom dplyr lead
 #' @importFrom dplyr mutate

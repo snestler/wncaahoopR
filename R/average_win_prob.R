@@ -1,7 +1,7 @@
 #' Average Win Probability
 #' 
 #' @description This function returns the average win probability for the home team.
-#' @usage average_win_prob(pbp_data)
+#' @usage average_win_prob(.data)
 #' 
 #' @param .data play-by-play data frame returned from w_get_pbp_game function
 #' @return Average Win Probability

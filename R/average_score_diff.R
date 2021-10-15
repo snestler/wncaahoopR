@@ -1,7 +1,7 @@
 #' Average Score Differential
 #'
 #' @description Returns a single value for the average score differential from home team's perspective.
-#' @usage average_score_diff(pbp_data)
+#' @usage average_score_diff(.data)
 #' 
 #' @param .data play-by-play data frame returned from w_get_pbp_game function
 #' @return Average score differential

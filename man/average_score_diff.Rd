@@ -4,7 +4,7 @@
 \alias{average_score_diff}
 \title{Average Score Differential}
 \usage{
-average_score_diff(pbp_data)
+average_score_diff(.data)
 }
 \arguments{
 \item{.data}{play-by-play data frame returned from w_get_pbp_game function}
