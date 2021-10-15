@@ -29,6 +29,7 @@
 #'  \item{ESPN_PBP}{the name of the team, as listed on the ESPN Play-By-Play logs}
 #'  \item{Warren_Nolan}{the name of the team, as listed on WarrenNolan.com}
 #'  \item{Trank}{the name of the team, as listed on barttorvik.com}
+#'  \item{conference}{each team's conference}
 #'  \item{name_247}{the name of the team, as listed on 247Sports.com}
 #' }
 #'
@@ -52,6 +53,7 @@
 #'  \item{color_4}{hexcode for team's 4th color, when available}
 #'  \item{color_5}{hexcode for team's 5th color, when available}
 #'  \item{color_6}{hexcode for team's 6th color, when available}
+#'  \item{conference}{each team's conference}
 #' }
 #'
 #' @details Convert between team names in various systems
@@ -72,3 +74,15 @@
 #' data(wcourt)
 #'
 "wcourt"
+
+#' A data frame containing 
+#'
+#' @docType data
+#' @format A data frame with win probabilities
+#'
+#' @details use this data frame for various win probability calculations
+#'
+#' @examples
+#' data(wp_hoops)
+#'
+"wp_hoops"

@@ -1,10 +1,11 @@
 #' Circle Assist Network
 #'
 #' @description This function produces an assist network visualization for a team for a single game (or collection of games).
-#' @usage circle_assist_net(.data, team, highlight_player, highlight_color, three_weights, threshold, message, listing)
+#' @usage circle_assist_net(.data, team, node_col, highlight_player, highlight_color, three_weights, threshold, message, listing)
 #'
 #' @param .data play-by-play data frame returned from w_get_pbp_game function 
 #' @param team Team to create network for. Can be bare home or away variable from play-by-play object or quoted team name.
+#' @param node_col Color for each node in the data.
 #' @param highlight_player Name of player to highlight in assist network. `NA` yields full team assist
 #' network with no player highlighting. Default = `NA`.
 #' @param highlight_color Color of player links to be highlighted. `NA` if ```highlight_player``` is `NA`.

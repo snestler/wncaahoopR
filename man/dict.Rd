@@ -12,6 +12,7 @@ A data frame with team names from various college basketball sites
  \item{ESPN_PBP}{the name of the team, as listed on the ESPN Play-By-Play logs}
  \item{Warren_Nolan}{the name of the team, as listed on WarrenNolan.com}
  \item{Trank}{the name of the team, as listed on barttorvik.com}
+ \item{conference}{each team's conference}
  \item{name_247}{the name of the team, as listed on 247Sports.com}
 }
 }
