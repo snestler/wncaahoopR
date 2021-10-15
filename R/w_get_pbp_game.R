@@ -13,7 +13,7 @@
 #' @importFrom dplyr select
 #' @importFrom magrittr %>% 
 #' @importFrom rvest html_table
-#' @importFrom rvest html_nodes
+#' @importFrom rvest html_elements
 #' @importFrom rvest html_text
 #' @importFrom stringdist stringdist
 #' @importFrom xml2 read_html
@@ -111,7 +111,7 @@ w_get_pbp_game <- function(game_ids) {
     pbp$home_favored_by <- NA
     pbp$game_id <- game_ids
     pbp$date <- allHTML %>% 
-      html_nodes("title") %>%
+      html_elements("title") %>%
       html_text() %>% 
       regmatches(., regexpr("\\w+\\s[0-9]+,\\s[0-9]{4}", .)) %>% 
       as.Date(., "%B %d, %Y")

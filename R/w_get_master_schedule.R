@@ -10,7 +10,7 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
-#' @importFrom rvest html_nodes
+#' @importFrom rvest html_elements
 #' @importFrom rvest html_table
 #' @importFrom xml2 read_html
 #' @export
@@ -77,7 +77,7 @@ w_get_master_schedule <- function(date) {
                               "home_score" = NA)
   }
   
-  x <- html_nodes(allRead, "a[href*='game?gameId']") %>% html_attr('href')
+  x <- html_elements(allRead, "a[href*='game?gameId']") %>% html_attr('href')
   x <- regmatches(x, regexpr("[0-9]+$", x))
   x <- x[!is.na(x) & !duplicated(x)]
   x <- x[1:(length(x) - n_canceled - n_postponed)]
