@@ -16,6 +16,8 @@
 #' game_flow(pbp_data, "red", "black")
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
+#' @import ggplot2
+#' @import grid
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 element_text
 #' @importFrom ggplot2 element_blank
@@ -96,8 +98,6 @@ game_flow <- function(.data, home_col = NULL, away_col = NULL) {
   max_score <- max(c(pbp_data$home_score, pbp_data$away_score))
 
   ### Make Plot
-  library(grid)
-  library(ggplot2)
   t1 <- textGrob(expr("Game Flow for " * phantom(!!home_team) * " vs " * phantom(!!away_team)),
                        just = "top", x = .25, y = 1.1, gp = gpar(col = "black", fontsize = 16))
   
