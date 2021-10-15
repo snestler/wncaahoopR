@@ -4,7 +4,7 @@
 \alias{wp_compute}
 \title{Win Probability Function}
 \usage{
-wp_compute(WHAT IS PASSED IN?)
+wp_compute(x)
 }
 \value{
 A single number, a probability between 0 and 1.

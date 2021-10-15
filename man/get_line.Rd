@@ -4,7 +4,7 @@
 \alias{get_line}
 \title{Get Line}
 \usage{
-get_line(pbp_data)
+get_line(.data)
 }
 \arguments{
 \item{.data}{play-by-play data frame returned from w_get_pbp_game function}

@@ -4,7 +4,7 @@
 \alias{gg_wp_chart}
 \title{Win Probability Charts in ggplot}
 \usage{
-gg_wp_chart(.data, home_col, away_col, show_labels)
+gg_wp_chart(.data, home_col, away_col, show_gei)
 }
 \arguments{
 \item{.data}{Play-by-play data returned from w_get_pbp_game}

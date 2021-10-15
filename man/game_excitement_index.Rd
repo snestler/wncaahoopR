@@ -4,7 +4,7 @@
 \alias{game_excitement_index}
 \title{Game Excitement Index}
 \usage{
-game_excitement_index(pbp_data)
+game_excitement_index(.data)
 }
 \arguments{
 \item{.data}{play-by-play data frame returned from w_get_pbp_game function}

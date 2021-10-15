@@ -4,7 +4,7 @@
 \alias{w_get_pbp_season}
 \title{Get Team Play-by-Play Data}
 \usage{
-w_get_pbp_game(game_ids)
+w_get_pbp_season(team)
 }
 \arguments{
 \item{team}{Team to get Play-by-Play data for}
