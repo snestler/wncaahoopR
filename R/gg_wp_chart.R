@@ -34,7 +34,7 @@
 #' @importFrom ggplot2 theme_minimal
 #' @importFrom magrittr %>%
 #' @export
-wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
+gg_wp_chart <- function(.data, home_col = NULL, away_col = NULL, show_gei = TRUE) {
   
   pbp_data <- .data
   
